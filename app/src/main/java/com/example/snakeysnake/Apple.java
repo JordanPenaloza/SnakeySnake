@@ -18,6 +18,7 @@ class Apple implements Drawable {
     // to spawn an apple
     private Point mSpawnRange;
     private int mSize;
+    //test comment
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
