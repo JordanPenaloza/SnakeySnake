@@ -16,7 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
 
-class SnakeGame extends SurfaceView implements Runnable{
+class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
     // Objects for the game loop/thread
     private Thread mThread = null;
@@ -134,7 +134,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 }
             }
 
-            draw();
+            draw(mCanvas, mPaint);
         }
     }
 
@@ -195,7 +195,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
 
     // Do all the drawing
-    public void draw() {
+    public void draw(Canvas canvas, Paint paint) {
         // Get a lock on the mCanvas
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
