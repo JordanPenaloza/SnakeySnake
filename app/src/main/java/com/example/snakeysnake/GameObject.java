@@ -28,8 +28,9 @@ public class GameObject {
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
         setLocation(location.x, location.y);
     }
-    public boolean checkCollision(int a, int b) {
+    public boolean checkCollision(Point a, Point b) {
         return a == b;
+        //need to find a way to make the snake's head position into a point to check for collision
     }
 
 }
