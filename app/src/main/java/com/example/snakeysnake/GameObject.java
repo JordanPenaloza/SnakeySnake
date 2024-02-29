@@ -1,6 +1,5 @@
 package com.example.snakeysnake;
 
-import android.content.Context;
 import android.graphics.Point;
 
 import java.util.Random;
@@ -28,6 +27,9 @@ public class GameObject {
         location.x = random.nextInt(mSpawnRange.x) + 1;
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
         setLocation(location.x, location.y);
+    }
+    public boolean checkCollision(int a, int b) {
+        return a == b;
     }
 
 }
