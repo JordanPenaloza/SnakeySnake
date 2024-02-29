@@ -109,7 +109,7 @@ class SnakeGame extends SurfaceView implements Runnable, Drawable {
     // Called to start a new game
     public void newGame() {
 
-        // reset the snake
+
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
 
         // Get the apple ready for dinner

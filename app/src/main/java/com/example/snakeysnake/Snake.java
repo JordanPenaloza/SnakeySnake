@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake extends GameObject implements Drawable {
+class Snake implements Drawable {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -25,6 +25,8 @@ class Snake extends GameObject implements Drawable {
     // Where is the centre of the screen
     // horizontally in pixels?
     private int halfWayPoint;
+
+
 
     // For tracking movement Heading
     private enum Heading {
@@ -42,6 +44,7 @@ class Snake extends GameObject implements Drawable {
 
     // A bitmap for the body
     private Bitmap mBitmapBody;
+
 
 
     public Snake(Context context, Point mr, int ss) {
@@ -114,8 +117,8 @@ class Snake extends GameObject implements Drawable {
     }
 
     // Get the snake ready for a new game
-    void reset(int w, int h) {
 
+    public void reset(int w, int h) {
         // Reset the heading
         heading = Heading.RIGHT;
 
