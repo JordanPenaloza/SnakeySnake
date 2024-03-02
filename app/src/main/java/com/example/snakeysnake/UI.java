@@ -19,6 +19,11 @@ public class UI {
             mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
         }
     }
+    public void displayPoints(Canvas mCanvas, int mScore) {
+        synchronized (mCanvas) {
+            mCanvas.drawText("" + mScore, 20, 120, mPaint);
+        }
+    }
 
 
 }
