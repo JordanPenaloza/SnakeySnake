@@ -1,6 +1,7 @@
 package com.example.snakeysnake;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -9,6 +10,8 @@ public class SnakeActivity extends Activity {
 
     // Declare an instance of SnakeGame
     SnakeGame mSnakeGame;
+
+
 
     // Set the game up
     @Override

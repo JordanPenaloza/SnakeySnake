@@ -16,7 +16,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
 
-class SnakeGame extends SurfaceView implements Runnable, Drawable {
+public class SnakeGame extends SurfaceView implements Runnable, Drawable {
+
 
     // Objects for the game loop/thread
     private Thread mThread = null;
@@ -39,14 +40,16 @@ class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private int mScore;
 
     // Objects for drawing
-    private Canvas mCanvas;
+    protected Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
-    private Paint mPaint;
+    protected Paint mPaint;
 
     // A snake ssss
     private Snake mSnake;
     // And an apple
     private Apple mApple;
+
+    private UI mUI;
 
 
     // This is the constructor method that gets called
@@ -102,6 +105,8 @@ class SnakeGame extends SurfaceView implements Runnable, Drawable {
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
                 blockSize);
+        mUI = new UI(mPaint);
+
 
     }
 
@@ -196,7 +201,7 @@ class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
     // Do all the drawing
     public void draw(Canvas canvas, Paint paint) {
-        // Get a lock on the mCanvas
+
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
 
@@ -216,23 +221,15 @@ class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
             // Draw some text while paused
             if(mPaused){
-
-                // Set the size and color of the mPaint for the text
-                mPaint.setColor(Color.argb(255, 255, 255, 255));
-                mPaint.setTextSize(250);
-
-                // Draw the message
-                // We will give this an international upgrade soon
-                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
-                mCanvas.drawText(getResources().
-                                getString(R.string.tap_to_play),
-                        200, 700, mPaint);
+                mUI.displayTapToPlayMessage(mCanvas);
             }
 
 
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+
         }
+
     }
 
     @Override
