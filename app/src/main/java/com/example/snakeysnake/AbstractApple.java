@@ -9,20 +9,10 @@ import android.graphics.Point;
 import java.util.Random;
 
 abstract class AbstractApple {
-
-    // The location of the apple on the grid
-    // Not in pixels
     private Point location = new Point();
-
-    // The range of values we can choose from
-    // to spawn an apple
     private Point mSpawnRange;
     private int mSize;
-
-    // An image to represent the apple
     private Bitmap mBitmapApple;
-
-    /// Set up the apple in the constructor
     public AbstractApple(Context context, Point sr, int s){
         this.mSpawnRange = sr;
         this.mSize = s;
