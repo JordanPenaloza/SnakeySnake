@@ -4,15 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
 import java.util.Random;
 
 abstract class AbstractApple {
-    private Point location = new Point();
-    private Point mSpawnRange;
-    private int mSize;
-    private Bitmap mBitmapApple;
+    protected Point location = new Point();
+    protected Point mSpawnRange;
+    protected int mSize;
+    protected Bitmap mBitmapApple;
     public AbstractApple(Context context, Point sr, int s){
         this.mSpawnRange = sr;
         this.mSize = s;
@@ -34,11 +36,13 @@ abstract class AbstractApple {
 
 
     public Point getLocation(){
+
         return location;
     }
 
 
     public void draw(Canvas canvas, Paint paint){
+
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);
 

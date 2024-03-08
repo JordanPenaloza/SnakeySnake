@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import java.util.Random;
 
-public class Apple extends AbstractApple implements Drawable {
+public class Apple extends AbstractApple  {
 
 
     public Apple(Context context, Point sr, int s){

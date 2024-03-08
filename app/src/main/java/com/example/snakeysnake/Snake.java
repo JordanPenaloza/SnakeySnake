@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake implements Drawable {
+public class Snake implements Drawable {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Point mMoveRange;
@@ -137,7 +137,8 @@ class Snake implements Drawable {
         return dead;
     }
 
-    boolean checkDinner(Point l) {
+
+    public boolean checkDinner(Point l) {
         if (segmentLocations.get(0).x == l.x &&
                 segmentLocations.get(0).y == l.y) {
             segmentLocations.add(new Point(-10, -10));
