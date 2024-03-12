@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -14,6 +15,8 @@ import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
+
 import java.io.IOException;
 
 public class SnakeGame extends SurfaceView implements Runnable, Drawable {
@@ -34,6 +37,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private Snake mSnake;
     private Apple mApple;
     private UI mUI;
+
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -136,15 +140,17 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     public void draw(Canvas canvas, Paint paint) {
 
         if (mSurfaceHolder.getSurface().isValid()) {
+
             mCanvas = mSurfaceHolder.lockCanvas();
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(120);
+            mCanvas.drawColor(Color.argb(255, 26, 180, 100));
             mUI.displayPoints(mCanvas, mScore);
+            mUI.displayNames(mCanvas);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
+
             if(mPaused){
                 mUI.displayTapToPlayMessage(mCanvas);
+
             }
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 
