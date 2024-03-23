@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.snakeysnake">
 
     <application
@@ -12,7 +13,8 @@
         <activity android:name=".SnakeActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,5 +22,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

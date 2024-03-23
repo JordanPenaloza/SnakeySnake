@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -37,6 +36,10 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private Snake mSnake;
     private Apple mApple;
     private UI mUI;
+
+    private PauseButton mPauseButton;
+
+    private int pauseCount;
 
 
     public SnakeGame(Context context, Point size) {
@@ -80,6 +83,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                         mNumBlocksHigh),
                 blockSize);
         mUI = new UI(mPaint);
+        mPauseButton = new PauseButton(mPaint);
 
 
     }
@@ -90,6 +94,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         mApple.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
+        pauseCount = 0;
     }
     @Override
     public void run() {
@@ -132,6 +137,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         if (mSnake.detectDeath()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
 
+            pauseCount = 0;
             mPaused =true;
         }
 
@@ -145,12 +151,15 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mCanvas.drawColor(Color.argb(255, 26, 180, 100));
             mUI.displayPoints(mCanvas, mScore);
             mUI.displayNames(mCanvas);
+            mPauseButton.displayPauseButton(mCanvas);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
 
-            if(mPaused){
+            if(mPaused && pauseCount == 0){
                 mUI.displayTapToPlayMessage(mCanvas);
 
+            } else if(mPaused && pauseCount >= 1) {
+                mUI.displayContinueMsg(mCanvas);
             }
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 
@@ -161,15 +170,28 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                if (mPaused) {
+            case MotionEvent.ACTION_DOWN:
+                // Initial Game Start on Pause
+                if (mPaused && pauseCount == 0) {
                     mPaused = false;
                     newGame();
                     return true;
+
+                // Game has started, But pause button was clicked
+                } else if (!mPaused && mPauseButton.pauseButtonClicked(mCanvas, motionEvent)) {
+                    System.out.println(mPauseButton.pauseButtonClicked(mCanvas, motionEvent));
+                    pauseCount++;
+                    mPaused = true;
+                    return true;
+
+                // Game is paused but we want to resume
+                } else if (mPaused && pauseCount >= 1 && mPauseButton.pauseButtonClicked(mCanvas, motionEvent)) {
+                    mPaused = false;
+                    resume();
                 }
+
                 mSnake.switchHeading(motionEvent);
                 break;
-
             default:
                 break;
 
@@ -182,6 +204,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         try {
             mThread.join();
         } catch (InterruptedException e) {
+            // Left blank to do nothing
         }
     }
 

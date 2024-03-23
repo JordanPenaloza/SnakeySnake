@@ -1,13 +1,11 @@
 package com.example.snakeysnake;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-
 public class UI {
-    private Paint mPaint;
+    protected Paint mPaint;
 
     public UI(Paint paint) {
 
@@ -36,8 +34,18 @@ public class UI {
         mPaint.setColor(Color.argb(255, 0, 0, 0));
         mPaint.setTextSize(60);
         mCanvas.drawText("Jordan Penaloza ", 1600, 120, mPaint);
-        mCanvas.drawText("Jesus Pablo ", 1600, 190, mPaint);
+        mCanvas.drawText("Jesus-Pablo Alfaro ", 1500, 190, mPaint);
     }
 
+    public void displayContinueMsg(Canvas mCanvas) {
+        synchronized (mCanvas) {
+            mPaint.setColor(Color.argb(255, 0, 0, 0));
+            mPaint.setTextSize(150);
+            Typeface typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD_ITALIC);
+            mPaint.setTypeface(typeface);
 
+            mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint);
+
+        }
+    }
 }

@@ -28,6 +28,8 @@ public class Snake implements Drawable {
     private Bitmap mBitmapHeadDown;
     private Bitmap mBitmapBody;
 
+    private Bitmap mBitmapPauseButton;
+
 
 
     public Snake(Context context, Point mr, int ss) {
