@@ -28,8 +28,6 @@ public class PauseButton extends UI {
         Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         fillPaint.setColor(fillColor);
 
-        // Draw the rectangle filled with White
-        canvas.drawRect(startX, topPadding, startX + rectWidth, topPadding + rectHeight, fillPaint);
 
         // Initialize border paint
         Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -40,6 +38,9 @@ public class PauseButton extends UI {
         // Adjust for stroke width
         float halfBorderWidth = borderWidth / 2.0f;
 
+        // Draw the rectangle filled with White
+        canvas.drawRect(startX, topPadding, startX + rectWidth, topPadding + rectHeight, fillPaint);
+
         // Draw the border
         canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + rectWidth - halfBorderWidth, topPadding + rectHeight - halfBorderWidth, borderPaint);
 
@@ -47,27 +48,18 @@ public class PauseButton extends UI {
         mPaint.setColor(Color.argb(255, 0, 0, 0));
         mPaint.setTextSize(120);
         canvas.drawText("Pause", 930, 100, mPaint);
-    }
 
-    // Testing Function used for debugging.
-    public void displayCounter(Canvas mCanvas, int pauseCount) {
-        synchronized (mCanvas) {
-            mPaint.setColor(Color.argb(255, 0, 0, 0));
-            mPaint.setTextSize(120);
-            mCanvas.drawText("" + pauseCount, 100, 120, mPaint);
-        }
+
     }
 
     public boolean pauseButtonClicked(Canvas mCanvas, MotionEvent motionEvent) {
         // Get finger press cords
         float fingerX = (int) motionEvent.getX();
         float fingerY = (int) motionEvent.getY();
-
         final float buttonX1 = 859;
         final float buttonX2 = 1346;
         final float buttonY1 = 6;
         final float buttonY2 = 104;
-
 
         // Check if finger in pause button
         return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));

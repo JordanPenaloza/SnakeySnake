@@ -98,13 +98,11 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     }
     @Override
     public void run() {
-        while (mPlaying) {
-            if(!mPaused) {
-                if (updateRequired()) {
-                    update();
-                }
-            }
 
+        while (mPlaying) {
+            if (!mPaused && updateRequired()) {
+                update();
+            }
             draw(mCanvas, mPaint);
         }
     }
