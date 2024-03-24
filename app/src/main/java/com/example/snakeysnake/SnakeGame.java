@@ -156,7 +156,8 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             if(mPaused && pauseCount == 0){
                 mUI.displayTapToPlayMessage(mCanvas);
 
-            } else if(mPaused && pauseCount >= 1) {
+            }
+            else if(mPaused && pauseCount >= 1) {
                 mUI.displayContinueMsg(mCanvas);
             }
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
