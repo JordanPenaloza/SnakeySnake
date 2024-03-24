@@ -29,18 +29,14 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
     private int mScore;
-
     protected Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
     protected Paint mPaint;
     private Snake mSnake;
     private Apple mApple;
     private UI mUI;
-
     private PauseButton mPauseButton;
-
     private int pauseCount;
-
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -106,7 +102,6 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             draw(mCanvas, mPaint);
         }
     }
-
     public boolean updateRequired() {
 
         final long TARGET_FPS = 10;
@@ -118,7 +113,6 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
             return true;
         }
-
         return false;
     }
 

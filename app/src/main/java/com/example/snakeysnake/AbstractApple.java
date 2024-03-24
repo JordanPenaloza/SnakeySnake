@@ -19,10 +19,7 @@ abstract class AbstractApple {
         this.mSpawnRange = sr;
         this.mSize = s;
         this.location.x = -10;
-
-
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
-
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 
@@ -36,13 +33,11 @@ abstract class AbstractApple {
 
 
     public Point getLocation(){
-
         return location;
     }
 
 
     public void draw(Canvas canvas, Paint paint){
-
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);
 

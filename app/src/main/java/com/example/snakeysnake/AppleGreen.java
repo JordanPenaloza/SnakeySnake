@@ -10,12 +10,9 @@ import android.graphics.Point;
 //Green apple implementation to show how polymorphism can be used to use abstractapple as a blue print and override the
 //draw method to make different colored apples
 public class AppleGreen extends AbstractApple {
-
     public AppleGreen(Context context, Point sr, int s){
         super(context, sr, s);
-
     }
-
     @Override
     public void draw(Canvas canvas, Paint paint){
         Paint coloredPaint = new Paint(paint);

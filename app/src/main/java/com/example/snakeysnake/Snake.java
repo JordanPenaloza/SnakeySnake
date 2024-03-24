@@ -33,7 +33,6 @@ public class Snake implements Drawable {
 
 
     public Snake(Context context, Point mr, int ss) {
-
         segmentLocations = new ArrayList<>();
         mSegmentSize = ss;
         mMoveRange = mr;
@@ -84,14 +83,11 @@ public class Snake implements Drawable {
 
         halfWayPoint = mr.x * ss / 2;
     }
-
     public void reset(int w, int h) {
         heading = Heading.RIGHT;
         segmentLocations.clear();
         segmentLocations.add(new Point(w / 2, h / 2));
     }
-
-
     void move() {
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             segmentLocations.get(i).x = segmentLocations.get(i - 1).x;
@@ -117,7 +113,6 @@ public class Snake implements Drawable {
         }
 
     }
-
     boolean detectDeath() {
 
         boolean dead = false;
@@ -128,7 +123,6 @@ public class Snake implements Drawable {
 
             dead = true;
         }
-
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
                     segmentLocations.get(0).y == segmentLocations.get(i).y) {
@@ -138,8 +132,6 @@ public class Snake implements Drawable {
         }
         return dead;
     }
-
-
     public boolean checkDinner(Point l) {
         if (segmentLocations.get(0).x == l.x &&
                 segmentLocations.get(0).y == l.y) {
@@ -152,7 +144,6 @@ public class Snake implements Drawable {
     public void draw(Canvas canvas, Paint paint) {
 
         if (!segmentLocations.isEmpty()) {
-
             switch (heading) {
                 case RIGHT:
                     canvas.drawBitmap(mBitmapHeadRight,
@@ -161,7 +152,6 @@ public class Snake implements Drawable {
                             segmentLocations.get(0).y
                                     * mSegmentSize, paint);
                     break;
-
                 case LEFT:
                     canvas.drawBitmap(mBitmapHeadLeft,
                             segmentLocations.get(0).x
@@ -177,7 +167,6 @@ public class Snake implements Drawable {
                             segmentLocations.get(0).y
                                     * mSegmentSize, paint);
                     break;
-
                 case DOWN:
                     canvas.drawBitmap(mBitmapHeadDown,
                             segmentLocations.get(0).x
@@ -186,7 +175,6 @@ public class Snake implements Drawable {
                                     * mSegmentSize, paint);
                     break;
             }
-
             for (int i = 1; i < segmentLocations.size(); i++) {
                 canvas.drawBitmap(mBitmapBody,
                         segmentLocations.get(i).x
@@ -198,7 +186,6 @@ public class Snake implements Drawable {
     }
 
     void switchHeading(MotionEvent motionEvent) {
-
         if (motionEvent.getX() >= halfWayPoint) {
             switch (heading) {
                 case UP:
@@ -213,7 +200,6 @@ public class Snake implements Drawable {
                 case LEFT:
                     heading = Heading.UP;
                     break;
-
             }
         } else {
             switch (heading) {

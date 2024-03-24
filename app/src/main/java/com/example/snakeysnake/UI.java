@@ -36,14 +36,12 @@ public class UI {
         mCanvas.drawText("Jordan Penaloza ", 1600, 120, mPaint);
         mCanvas.drawText("Jesus-Pablo Alfaro ", 1500, 190, mPaint);
     }
-
     public void displayContinueMsg(Canvas mCanvas) {
         synchronized (mCanvas) {
             mPaint.setColor(Color.argb(255, 0, 0, 0));
             mPaint.setTextSize(150);
             Typeface typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD_ITALIC);
             mPaint.setTypeface(typeface);
-
             mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint);
 
         }

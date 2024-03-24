@@ -9,13 +9,8 @@ import android.graphics.Point;
 import java.util.Random;
 
 public class Apple extends AbstractApple  {
-
-
     public Apple(Context context, Point sr, int s){
         super(context, sr, s);
-
     }
-
-
 }
 

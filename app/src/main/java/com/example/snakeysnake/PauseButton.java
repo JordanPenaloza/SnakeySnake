@@ -24,14 +24,12 @@ public class PauseButton extends UI {
         initializeFillPaint(fillPaint);
         initializeBorder(borderPaint);
         draw(canvas, fillPaint, borderPaint);
-
     }
 
     public void draw(Canvas canvas, Paint fillPaint, Paint borderPaint) {
         int canvasWidth = canvas.getWidth();
         float startX = (canvasWidth - rectWidth) / 2.0f;
         float halfBorderWidth = borderWidth / 2.0f;
-
         canvas.drawRect(startX, topPadding, startX + rectWidth, topPadding + rectHeight, fillPaint);
         canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + rectWidth - halfBorderWidth, topPadding + rectHeight - halfBorderWidth, borderPaint);
         mPaint.setColor(Color.argb(255, 0, 0, 0));
@@ -43,12 +41,10 @@ public class PauseButton extends UI {
         fillPaint.setColor(fillColor);
     }
     public void initializeBorder(Paint borderPaint) {
-
         borderPaint.setColor(borderColor);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(borderWidth);
     }
-
     public boolean pauseButtonClicked(Canvas mCanvas, MotionEvent motionEvent) {
         float fingerX = (int) motionEvent.getX();
         float fingerY = (int) motionEvent.getY();
@@ -56,7 +52,6 @@ public class PauseButton extends UI {
         final float buttonX2 = 1346;
         final float buttonY1 = 6;
         final float buttonY2 = 104;
-
         //check if finger pressed
         return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));
     }
