@@ -13,6 +13,7 @@ public class Apple extends AbstractApple  {
 
     }
 
+    // Method overridding
     @Override
     public void spawn() {
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
@@ -23,6 +24,7 @@ public class Apple extends AbstractApple  {
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
 
+    // Method overloading
     @Override
     public void spawn(String color) {
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);

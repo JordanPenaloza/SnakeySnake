@@ -23,7 +23,9 @@ abstract class AbstractApple {
     }
 
 
-    public abstract void spawn();
+    public void spawn() {
+        System.out.println("This should never print because it's being overridden :D");
+    }
     public abstract void spawn(String color);
 
 
