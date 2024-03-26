@@ -1,12 +1,9 @@
 package com.example.snakeysnake;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
-import android.view.View;
-import android.widget.Button;
 
 public class SnakeActivity extends Activity {
     SnakeGame mSnakeGame;

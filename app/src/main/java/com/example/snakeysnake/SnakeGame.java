@@ -14,7 +14,6 @@ import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
 
 import java.io.IOException;
 
@@ -120,7 +119,13 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
         mSnake.move();
         if(mSnake.checkDinner(mApple.getLocation())){
-            mApple.spawn();
+            // Polymorphism Example: If score is odd, spawn reg apple, if even spawn green apple
+            if((mScore % 2) == 0) {
+                mApple.spawn("green");
+            }
+            else if ((mScore % 2) == 1) {
+                mApple.spawn();
+            }
             mScore = mScore + 1;
             mSP.play(mEat_ID, 1, 1, 0, 0, 1);
 
@@ -171,14 +176,14 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                     return true;
 
                 // Game has started, But pause button was clicked
-                } else if (!mPaused && mPauseButton.pauseButtonClicked(mCanvas, motionEvent)) {
-                    System.out.println(mPauseButton.pauseButtonClicked(mCanvas, motionEvent));
+                } else if (!mPaused && mPauseButton.pauseButtonClicked(motionEvent)) {
+                    System.out.println(mPauseButton.pauseButtonClicked( motionEvent));
                     pauseCount++;
                     mPaused = true;
                     return true;
 
                 // Game is paused but we want to resume
-                } else if (mPaused && pauseCount >= 1 && mPauseButton.pauseButtonClicked(mCanvas, motionEvent)) {
+                } else if (mPaused && pauseCount >= 1 && mPauseButton.pauseButtonClicked(motionEvent)) {
                     mPaused = false;
                     resume();
                 }
