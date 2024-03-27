@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
-abstract class AbstractApple {
+abstract class AbstractApple implements Drawable, GameObjects {
     protected Point location = new Point();
     protected Point mSpawnRange;
     protected int mSize;
@@ -24,16 +24,12 @@ abstract class AbstractApple {
 
 
     public void spawn() {
-        System.out.println("This should never print because it's being overridden :D");
+        System.out.println("To meet requirement of interface");
     }
     public abstract void spawn(String color);
 
 
-    public Point getLocation(){
-        return location;
-    }
-
-
+    public Point getLocation(){return location;}
     public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);

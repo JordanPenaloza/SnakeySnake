@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-public class Snake implements Drawable {
+public class Snake implements Drawable, GameObjects {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Point mMoveRange;
@@ -83,7 +83,10 @@ public class Snake implements Drawable {
 
         halfWayPoint = mr.x * ss / 2;
     }
-    public void reset(int w, int h) {
+    public void spawn() {
+        System.out.println("This should never print because it's being overridden :D");
+    }
+    public void spawn(int w, int h) {
         heading = Heading.RIGHT;
         segmentLocations.clear();
         segmentLocations.add(new Point(w / 2, h / 2));
@@ -139,6 +142,10 @@ public class Snake implements Drawable {
             return true;
         }
         return false;
+    }
+
+    public Point getLocation() {
+        return segmentLocations.get(0);
     }
 
     public void draw(Canvas canvas, Paint paint) {

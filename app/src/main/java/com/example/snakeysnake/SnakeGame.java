@@ -85,7 +85,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     public void newGame() {
 
 
-        mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
+        mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
