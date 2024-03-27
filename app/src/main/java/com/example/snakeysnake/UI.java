@@ -6,18 +6,19 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 public class UI {
     protected Paint mPaint;
+    protected Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
+
 
     public UI(Paint paint) {
 
         mPaint = paint;
+        mPaint.setTypeface(typeface);
     }
 
     public void displayTapToPlayMessage(Canvas mCanvas) {
         synchronized (mCanvas) {
             mPaint.setColor(Color.argb(255, 0, 0, 0));
             mPaint.setTextSize(250);
-            Typeface typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD_ITALIC);
-            mPaint.setTypeface(typeface);
             mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
 
         }
@@ -39,8 +40,6 @@ public class UI {
         synchronized (mCanvas) {
             mPaint.setColor(Color.argb(255, 0, 0, 0));
             mPaint.setTextSize(150);
-            Typeface typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD_ITALIC);
-            mPaint.setTypeface(typeface);
             mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint);
 
         }
