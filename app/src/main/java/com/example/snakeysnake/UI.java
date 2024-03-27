@@ -18,7 +18,6 @@ public class UI {
             mPaint.setTextSize(250);
             Typeface typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD_ITALIC);
             mPaint.setTypeface(typeface);
-
             mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
 
         }

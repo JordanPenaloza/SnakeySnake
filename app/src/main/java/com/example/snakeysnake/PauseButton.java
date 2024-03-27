@@ -26,7 +26,7 @@ public class PauseButton extends UI {
         draw(canvas, fillPaint, borderPaint);
     }
 
-    public void draw(Canvas canvas, Paint fillPaint, Paint borderPaint) {
+    private void draw(Canvas canvas, Paint fillPaint, Paint borderPaint) {
         int canvasWidth = canvas.getWidth();
         float startX = (canvasWidth - rectWidth) / 2.0f;
         float halfBorderWidth = borderWidth / 2.0f;
@@ -37,10 +37,10 @@ public class PauseButton extends UI {
         canvas.drawText("Pause", 930, 100, mPaint);
     }
 
-    public void initializeFillPaint(Paint fillPaint) {
+    private void initializeFillPaint(Paint fillPaint) {
         fillPaint.setColor(fillColor);
     }
-    public void initializeBorder(Paint borderPaint) {
+    private void initializeBorder(Paint borderPaint) {
         borderPaint.setColor(borderColor);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(borderWidth);
