@@ -4,32 +4,29 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
-import java.util.Random;
 
 abstract class AbstractApple {
     protected Point location = new Point();
     protected Point mSpawnRange;
     protected int mSize;
     protected Bitmap mBitmapApple;
-    public AbstractApple(Context context, Point sr, int s){
+    protected Context context;
+    public AbstractApple(Context context, Point sr, int s) {
         this.mSpawnRange = sr;
         this.mSize = s;
         this.location.x = -10;
+        this.context = context;
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 
 
-    public void spawn(){
-        Random random = new Random();
-        location.x = random.nextInt(mSpawnRange.x) + 1;
-        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
-
+    public void spawn() {
+        System.out.println("This should never print because it's being overridden :D");
     }
+    public abstract void spawn(String color);
 
 
     public Point getLocation(){

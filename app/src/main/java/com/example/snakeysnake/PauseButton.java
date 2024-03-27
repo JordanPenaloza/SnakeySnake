@@ -45,7 +45,7 @@ public class PauseButton extends UI {
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(borderWidth);
     }
-    public boolean pauseButtonClicked(Canvas mCanvas, MotionEvent motionEvent) {
+    public boolean pauseButtonClicked(MotionEvent motionEvent) {
         float fingerX = (int) motionEvent.getX();
         float fingerY = (int) motionEvent.getY();
         final float buttonX1 = 859;
