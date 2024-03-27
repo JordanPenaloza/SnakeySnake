@@ -167,32 +167,26 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                // Initial Game Start on Pause
-                if (mPaused && pauseCount == 0) {
-                    mPaused = false;
-                    newGame();
-                    return true;
-
-                // Game has started, But pause button was clicked
-                } else if (!mPaused && mPauseButton.pauseButtonClicked(motionEvent)) {
-                    System.out.println(mPauseButton.pauseButtonClicked( motionEvent));
-                    pauseCount++;
-                    mPaused = true;
-                    return true;
-
-                // Game is paused but we want to resume
-                } else if (mPaused && pauseCount >= 1 && mPauseButton.pauseButtonClicked(motionEvent)) {
-                    mPaused = false;
-                    resume();
-                }
-
-                mSnake.switchHeading(motionEvent);
-                break;
-            default:
-                break;
-
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            // Initial Game Start on Pause
+            if (mPaused && pauseCount == 0) {
+                mPaused = false;
+                newGame();
+                return true;
+            }
+            // Game has started, But pause button was clicked
+            else if (!mPaused && mPauseButton.pauseButtonClicked(motionEvent)) {
+                System.out.println(mPauseButton.pauseButtonClicked(motionEvent));
+                pauseCount++;
+                mPaused = true;
+                return true;
+            }
+            // Game is paused but we want to resume
+            else if (mPaused && pauseCount >= 1 && mPauseButton.pauseButtonClicked(motionEvent)) {
+                mPaused = false;
+                resume();
+            }
+            mSnake.switchHeading(motionEvent);
         }
         return true;
     }
