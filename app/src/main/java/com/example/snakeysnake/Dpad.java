@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 public class Dpad extends UI implements Drawable {
+    public boolean dpadTouched = false;
+    public String dpadString = "";
     public Dpad(Paint paint) {
         super(paint);
         paint.setColor(Color.BLACK);
@@ -32,6 +34,8 @@ public class Dpad extends UI implements Drawable {
         final float buttonX2 = 2050;
         final float buttonY1 = 600;
         final float buttonY2 = 700;
+        dpadTouched = true;
+        dpadString = "bottom";
         return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));
     }
     public boolean topClicked(MotionEvent motionEvent) {
@@ -41,6 +45,8 @@ public class Dpad extends UI implements Drawable {
         final float buttonX2 = 2050;
         final float buttonY1 = 400;
         final float buttonY2 = 500;
+        dpadTouched = true;
+        dpadString = "top";
         return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));
     }
     public boolean leftClicked(MotionEvent motionEvent) {
@@ -50,6 +56,8 @@ public class Dpad extends UI implements Drawable {
         final float buttonX2 = 1950;
         final float buttonY1 = 500;
         final float buttonY2 = 600;
+        dpadTouched = true;
+        dpadString = "left";
         return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));
     }
     public boolean rightClicked(MotionEvent motionEvent) {
@@ -59,6 +67,8 @@ public class Dpad extends UI implements Drawable {
         final float buttonX2 = 2150;
         final float buttonY1 = 500;
         final float buttonY2 = 600;
+        dpadTouched = true;
+        dpadString = "right";
         return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));
     }
 }

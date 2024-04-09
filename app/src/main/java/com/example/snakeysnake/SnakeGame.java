@@ -170,6 +170,21 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     public boolean onTouchEvent(MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             // Initial Game Start on Pause
+
+            if(dpad.dpadTouched) {
+                switch(dpad.dpadString) {
+                    case "bottom":
+                        break;
+                    case "top":
+                        break;
+                    case "right":
+                        break;
+                    case "left":
+                        break;
+                    default:
+                        break;
+                }
+            }
             if (mPaused && pauseCount == 0) {
                 mPaused = false;
                 newGame();
@@ -191,6 +206,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         }
         return true;
     }
+
 
     public void pause() {
         mPlaying = false;
