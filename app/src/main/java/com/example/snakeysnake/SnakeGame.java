@@ -36,6 +36,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private UI mUI;
     private PauseButton mPauseButton;
     private int pauseCount;
+    private Dpad dpad;
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -79,12 +80,11 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                 blockSize);
         mUI = new UI(mPaint);
         mPauseButton = new PauseButton(mPaint);
+        dpad = new Dpad(mPaint);
 
 
     }
     public void newGame() {
-
-
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
         mScore = 0;
@@ -151,6 +151,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mPauseButton.displayPauseButton(mCanvas);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
+            dpad.draw(mCanvas, mPaint);
 
             if(mPaused && pauseCount == 0){
                 mUI.displayTapToPlayMessage(mCanvas);
