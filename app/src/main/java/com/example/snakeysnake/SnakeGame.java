@@ -33,6 +33,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     protected Paint mPaint;
     private Snake mSnake;
     private Apple mApple;
+    private Bird mBird;
     private UI mUI;
     private PauseButton mPauseButton;
     private int pauseCount;
@@ -79,6 +80,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
                 blockSize);
+        mBird = new Bird(size.x,blockSize);
         mUI = new UI(mPaint);
         mPauseButton = new PauseButton(mPaint);
         dpad = new Dpad(mPaint);
@@ -120,10 +122,12 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     public void update() {
         gameTimer++;
         mSnake.move();
+        mBird.move();
         if(mSnake.checkDinner(mApple.getLocation())){
             // Polymorphism Example: If score is odd, spawn reg apple, if even spawn green apple
             if((mScore % 2) == 0) {
                 mApple.spawn("green");
+                mBird.spawn(mSnake.getLocation().y);
             }
             else if ((mScore % 2) == 1) {
                 mApple.spawn();
@@ -132,6 +136,10 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mScore = mScore + 1;
             mSP.play(mEat_ID, 1, 1, 0, 0, 1);
 
+        }
+        if (mBird.isActive() && mSnake.getLocation().equals(mBird.getPosition())){
+            mScore--;
+            mBird.spawn(mSnake.getLocation().y);
         }
 
         if (mSnake.detectDeath()) {
@@ -154,6 +162,8 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mPauseButton.displayPauseButton(mCanvas);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
+            mBird.draw(mCanvas, mPaint);
+            paint.setColor(Color.BLACK);
             dpad.draw(mCanvas, mPaint);
 
             if(mPaused && pauseCount == 0){
