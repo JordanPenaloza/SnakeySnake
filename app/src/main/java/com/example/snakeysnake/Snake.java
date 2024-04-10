@@ -9,9 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
+import androidx.constraintlayout.widget.ConstraintSet;
+
 import java.util.ArrayList;
 
 public class Snake implements Drawable, GameObjects {
+
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Point mMoveRange;
@@ -191,6 +194,7 @@ public class Snake implements Drawable, GameObjects {
             }
         }
     }
+
 
     void switchHeading(MotionEvent motionEvent) {
         if (motionEvent.getX() >= halfWayPoint) {
