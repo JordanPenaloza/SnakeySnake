@@ -36,6 +36,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private UI mUI;
     private PauseButton mPauseButton;
     private int pauseCount;
+    private int gameTimer;
     private Dpad dpad;
 
     public SnakeGame(Context context, Point size) {
@@ -90,6 +91,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         pauseCount = 0;
+        gameTimer = 0;
     }
     @Override
     public void run() {
@@ -116,7 +118,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     }
 
     public void update() {
-
+        gameTimer++;
         mSnake.move();
         if(mSnake.checkDinner(mApple.getLocation())){
             // Polymorphism Example: If score is odd, spawn reg apple, if even spawn green apple
@@ -126,6 +128,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             else if ((mScore % 2) == 1) {
                 mApple.spawn();
             }
+
             mScore = mScore + 1;
             mSP.play(mEat_ID, 1, 1, 0, 0, 1);
 
