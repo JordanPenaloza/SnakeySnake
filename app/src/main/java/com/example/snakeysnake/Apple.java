@@ -22,6 +22,7 @@ public class Apple extends AbstractApple  {
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
 
+
     // Method overridding
     @Override
     public void spawn() {
@@ -31,13 +32,13 @@ public class Apple extends AbstractApple  {
 
     // Method overloading
     @Override
-    public void spawn(String color) {
-        spawn();
-        if(Objects.equals(color, "green")) {
+    public void spawn(String type) {
+        if(Objects.equals(type, "green")) {
             mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
             defaultSpawn();
-        } else if (Objects.equals(color, "death")) {
-            mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
+        } else if (Objects.equals(type, "death")) {
+            // Will Spawn Death Apple (temp spawns head)
+            mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.head);
             defaultSpawn();
         }
     }
