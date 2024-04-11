@@ -92,10 +92,13 @@ public class Snake implements Drawable, GameObjects {
         segmentLocations.add(new Point(w / 2, h / 2));
     }
     void move() {
+        // Move the body
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             segmentLocations.get(i).x = segmentLocations.get(i - 1).x;
             segmentLocations.get(i).y = segmentLocations.get(i - 1).y;
         }
+
+        // Move the head
         Point p = segmentLocations.get(0);
         switch (heading) {
             case UP:
@@ -115,6 +118,18 @@ public class Snake implements Drawable, GameObjects {
                 break;
         }
 
+        // Wrap the snake head to the other side of the screen if out of bounds
+        if (p.x >= mMoveRange.x) {
+            p.x = 0;
+        } else if (p.x < 0) {
+            p.x = mMoveRange.x - 1;
+        }
+
+        if (p.y >= mMoveRange.y) {
+            p.y = 0;
+        } else if (p.y < 0) {
+            p.y = mMoveRange.y - 1;
+        }
     }
     boolean detectDeath() {
 
