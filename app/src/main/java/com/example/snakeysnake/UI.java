@@ -35,6 +35,8 @@ public class UI {
         mPaint.setTextSize(60);
         mCanvas.drawText("Jordan Penaloza ", 1600, 120, mPaint);
         mCanvas.drawText("Jesus-Pablo Alfaro ", 1500, 190, mPaint);
+        mCanvas.drawText("Alicia Luna",1600, 260, mPaint);
+        mCanvas.drawText("Eric Delgado",1600, 310, mPaint);
     }
     public void displayContinueMsg(Canvas mCanvas) {
         synchronized (mCanvas) {
