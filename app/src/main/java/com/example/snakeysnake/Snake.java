@@ -211,37 +211,31 @@ public class Snake implements Drawable, GameObjects {
     }
 
 
-    void switchHeading(MotionEvent motionEvent) {
-        if (motionEvent.getX() >= halfWayPoint) {
-            switch (heading) {
-                case UP:
-                    heading = Heading.RIGHT;
-                    break;
-                case RIGHT:
-                    heading = Heading.DOWN;
-                    break;
-                case DOWN:
-                    heading = Heading.LEFT;
-                    break;
-                case LEFT:
+    void switchHeading(String direction) {
+
+        switch (direction) {
+            case "UP":
+                if (heading != Heading.DOWN){
                     heading = Heading.UP;
-                    break;
-            }
-        } else {
-            switch (heading) {
-                case UP:
-                    heading = Heading.LEFT;
-                    break;
-                case LEFT:
-                    heading = Heading.DOWN;
-                    break;
-                case DOWN:
+                }
+                break;
+            case "RIGHT":
+                if (heading != Heading.LEFT) {
                     heading = Heading.RIGHT;
-                    break;
-                case RIGHT:
-                    heading = Heading.UP;
-                    break;
+                }
+                break;
+            case "DOWN":
+                if (heading != Heading.UP) {
+                    heading = Heading.DOWN;
+                }
+                break;
+            case "LEFT":
+                if (heading != Heading.RIGHT) {
+                    heading = Heading.LEFT;
+                }
+                break;
             }
-        }
+
+
     }
 }
