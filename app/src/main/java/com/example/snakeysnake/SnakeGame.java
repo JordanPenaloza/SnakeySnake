@@ -25,6 +25,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private SoundPool mSP;
     private int mEat_ID = -1;
     private int mCrashID = -1;
+    private int mLebronID = -1;
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
     private int mScore;
@@ -39,6 +40,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private int pauseCount;
     private int gameTimer;
     private Dpad dpad;
+    private Lebron mLebron;
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -65,6 +67,8 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mEat_ID = mSP.load(descriptor, 0);
             descriptor = assetManager.openFd("snake_death.ogg");
             mCrashID = mSP.load(descriptor, 0);
+            descriptor = assetManager.openFd("lebron.ogg");
+            mLebronID = mSP.load(descriptor, 0);
 
         } catch (IOException e) {
         }
@@ -84,12 +88,16 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         mUI = new UI(mPaint);
         mPauseButton = new PauseButton(mPaint);
         dpad = new Dpad(mPaint);
+        mLebron = new Lebron(context, new Point(NUM_BLOCKS_WIDE,
+                mNumBlocksHigh),
+                blockSize);
 
 
     }
     public void newGame() {
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
+        mLebron.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         pauseCount = 0;
@@ -165,6 +173,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mBird.draw(mCanvas, mPaint);
             paint.setColor(Color.BLACK);
             dpad.draw(mCanvas, mPaint);
+            mLebron.draw(mCanvas, mPaint);
 
             if(mPaused && pauseCount == 0){
                 mUI.displayTapToPlayMessage(mCanvas);
