@@ -18,8 +18,6 @@ public class Snake implements Drawable, GameObjects {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Point mMoveRange;
-    private int halfWayPoint;
-
     private enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
@@ -31,7 +29,6 @@ public class Snake implements Drawable, GameObjects {
     private Bitmap mBitmapHeadDown;
     private Bitmap mBitmapBody;
 
-    private Bitmap mBitmapPauseButton;
 
 
 
@@ -84,7 +81,7 @@ public class Snake implements Drawable, GameObjects {
                 .createScaledBitmap(mBitmapBody,
                         ss, ss, false);
 
-        halfWayPoint = mr.x * ss / 2;
+
     }
     public void spawn() {
         System.out.println("This should never print because it's being overridden :D");
