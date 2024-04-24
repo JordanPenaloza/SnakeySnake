@@ -34,7 +34,7 @@ public class Lebron implements GameObjects, Drawable {
     public void spawn() {
 
         mBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.lebron);
-        mBitmap = Bitmap.createScaledBitmap(mBitmap, mSize, mSize, false);
+        mBitmap = Bitmap.createScaledBitmap(mBitmap, mSize* 2, mSize * 2, false);
         Random random = new Random();
         location.x = random.nextInt(mSpawnRange.x) + 1;
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
