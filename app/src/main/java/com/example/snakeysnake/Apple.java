@@ -57,6 +57,7 @@ public class Apple extends AbstractApple  {
     }
     public String getType() {
         return type;
+
     }
 }
 
