@@ -16,30 +16,34 @@ public class Apple extends AbstractApple  {
 
     private void defaultSpawn() {
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, mSize, mSize, false);
-
         Random random = new Random();
         location.x = random.nextInt(mSpawnRange.x) + 1;
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
-
-
-    // Method overridding
-    @Override
-    public void spawn() {
-        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
-        defaultSpawn();
-    }
-
-    // Method overloading
     @Override
     public void spawn(String type) {
-        if(Objects.equals(type, "green")) {
-            mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
-            defaultSpawn();
-        } else if (Objects.equals(type, "death")) {
-            // Will Spawn Death Apple (temp spawns head)
-            mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.head);
-            defaultSpawn();
+        switch(type) {
+            case "red":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.redapple);
+                defaultSpawn();
+                break;
+            case "blue":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.blueapple);
+                defaultSpawn();
+                break;
+            case "purple":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.purpleapple);
+                defaultSpawn();
+                break;
+            case "gold":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldapple);
+                defaultSpawn();
+                break;
+            case "green":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
+                defaultSpawn();
+                break;
+            default:
         }
     }
 }
