@@ -14,9 +14,7 @@ public class AppleList {
         this.size = s;
 
     }
-    public void addApple(String type) {
-        Apple apple = new Apple(context, spawnRange, size);
-        apple.spawn(type);
+    public void addApple(Apple apple) {
         apples.add(apple);
     }
     public void removeApple(Apple apple) {
@@ -25,10 +23,6 @@ public class AppleList {
 
     public ArrayList<Apple> getApples() {
         return apples;
-    }
-
-    public int getSize() {
-        return apples.size();
     }
 
     public boolean isEmpty() {
