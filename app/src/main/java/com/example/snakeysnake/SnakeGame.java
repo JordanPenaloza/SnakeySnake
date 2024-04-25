@@ -141,9 +141,13 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                 mApple.spawn();
             }
 
-            mScore = mScore + 1;
+            mScore++;
             mSP.play(mEat_ID, 1, 1, 0, 0, 1);
 
+        }
+        if (mSnake.checkDinner(mLebron.getLocation())) {
+            mLebron.spawn();
+            mSP.play(mLebronID, 1, 1, 0, 0, 1);
         }
         if (mBird.isActive() && mSnake.getLocation().equals(mBird.getPosition())){
             mScore--;
