@@ -1,46 +1,66 @@
 package com.example.snakeysnake;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
-import java.util.Objects;
-import java.util.Random;
-
 public class Apple extends AbstractApple  {
+
     public Apple(Context context, Point sr, int s) {
         super(context, sr, s);
 
     }
 
-    private void defaultSpawn() {
-        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, mSize, mSize, false);
-
-        Random random = new Random();
-        location.x = random.nextInt(mSpawnRange.x) + 1;
-        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
+    @Override
+    protected void setType(String type) {
+        this.type = type;
     }
 
+    @Override
+    protected String getType() {
+        if(this.type == null) {
+            return "NULL";
+        }
+        return this.type;
+    }
 
-    // Method overridding
+    public void spawn(String type) {
+        switch (type) {
+            case "green": {
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
+                setType("green");
+                defaultSpawn();
+                break;
+            }
+            case "blue": {
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.blueapple);
+                setType("blue");
+                defaultSpawn();
+                break;
+            }
+            case "purple": {
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.purpleapple);
+                setType("purple");
+                defaultSpawn();
+                break;
+            }
+            case "gold": {
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldapple);
+                setType("gold");
+                defaultSpawn();
+                break;
+            }
+            default:
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.redapple);
+                setType("red");
+                defaultSpawn();
+                break;
+        }
+    }
+
     @Override
     public void spawn() {
-        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
-        defaultSpawn();
-    }
-
-    // Method overloading
-    @Override
-    public void spawn(String type) {
-        if(Objects.equals(type, "green")) {
-            mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
-            defaultSpawn();
-        } else if (Objects.equals(type, "death")) {
-            // Will Spawn Death Apple (temp spawns head)
-            mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.head);
-            defaultSpawn();
-        }
+        // Do nothing
     }
 }
 
