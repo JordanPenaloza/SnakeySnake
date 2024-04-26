@@ -149,7 +149,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mLebron.spawn();
             mSP.play(mLebronID, 1, 1, 0, 0, 1);
         }
-        if (mBird.isActive() && mSnake.getLocation().equals(mBird.getPosition())){
+        if (mSnake.checkBird(mBird.getPosition())){
             mScore--;
             mBird.spawn(mSnake.getLocation().y);
         }
@@ -171,7 +171,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mCanvas.drawColor(Color.argb(255, 26, 180, 100));
             mUI.displayPoints(mCanvas, mScore);
             mUI.displayNames(mCanvas);
-            mPauseButton.displayPauseButton(mCanvas);
+            mPauseButton.displayPauseButton(mCanvas,mPaused);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
             mBird.draw(mCanvas, mPaint);
@@ -183,9 +183,9 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                 mUI.displayTapToPlayMessage(mCanvas);
 
             }
-            else if(mPaused && pauseCount >= 1) {
-                mUI.displayContinueMsg(mCanvas);
-            }
+//            else if(mPaused && pauseCount >= 1) {
+//                mUI.displayContinueMsg(mCanvas);
+//            }
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 
         }

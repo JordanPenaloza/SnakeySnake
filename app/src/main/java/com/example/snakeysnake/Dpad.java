@@ -9,7 +9,7 @@ public class Dpad extends UI implements Drawable {
     public String dpadString = "";
     public Dpad(Paint paint) {
         super(paint);
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.argb(0,0,0,0));
         paint.setStyle(Paint.Style.FILL);
     }
 

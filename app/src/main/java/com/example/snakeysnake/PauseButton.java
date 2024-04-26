@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 
 public class PauseButton extends UI {
     // Initial Variables
-    private final int rectWidth = 500;
+    private final int rectWidth = 600;
     private final int rectHeight = 110;
     private final int fillColor = Color.WHITE;
     private final int borderColor = Color.BLACK;
@@ -18,23 +18,23 @@ public class PauseButton extends UI {
         super(paint);
     }
 
-    public void displayPauseButton(Canvas canvas) {
+    public void displayPauseButton(Canvas canvas, Boolean mPaused) {
         Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         initializeFillPaint(fillPaint);
         initializeBorder(borderPaint);
-        draw(canvas, fillPaint, borderPaint);
+        draw(canvas, fillPaint, borderPaint,mPaused);
     }
 
-    private void draw(Canvas canvas, Paint fillPaint, Paint borderPaint) {
+    private void draw(Canvas canvas, Paint fillPaint, Paint borderPaint, Boolean mPaused) {
         int canvasWidth = canvas.getWidth();
         float startX = (canvasWidth - rectWidth) / 2.0f;
         float halfBorderWidth = borderWidth / 2.0f;
-        canvas.drawRect(startX, topPadding, startX + rectWidth, topPadding + rectHeight, fillPaint);
-        canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + rectWidth - halfBorderWidth, topPadding + rectHeight - halfBorderWidth, borderPaint);
+        canvas.drawRect(startX, topPadding, startX + (mPaused ? rectWidth: 500), topPadding + rectHeight, fillPaint);
+        canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + (mPaused ? rectWidth - halfBorderWidth: 500 - halfBorderWidth), topPadding + rectHeight - halfBorderWidth, borderPaint);
         mPaint.setColor(Color.argb(255, 0, 0, 0));
         mPaint.setTextSize(120);
-        canvas.drawText("Pause", 930, 100, mPaint);
+        canvas.drawText(mPaused ? "Resume" : "Pause", 900, 100, mPaint);
     }
 
     private void initializeFillPaint(Paint fillPaint) {

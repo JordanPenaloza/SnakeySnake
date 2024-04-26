@@ -34,16 +34,16 @@ public class UI {
         mPaint.setColor(Color.argb(255, 0, 0, 0));
         mPaint.setTextSize(60);
         mCanvas.drawText("Jordan Penaloza ", 1600, 120, mPaint);
-        mCanvas.drawText("Jesus-Pablo Alfaro ", 1500, 190, mPaint);
+        mCanvas.drawText("Jesus-Pablo Alfaro ", 1600, 190, mPaint);
         mCanvas.drawText("Alicia Luna",1600, 260, mPaint);
-        mCanvas.drawText("Eric Delgado",1600, 310, mPaint);
+        mCanvas.drawText("Eric Delgado",1600, 330, mPaint);
     }
-    public void displayContinueMsg(Canvas mCanvas) {
-        synchronized (mCanvas) {
-            mPaint.setColor(Color.argb(255, 0, 0, 0));
-            mPaint.setTextSize(150);
-            mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint);
-
-        }
-    }
+//    public void displayContinueMsg(Canvas mCanvas) {
+//        synchronized (mCanvas) {
+//            mPaint.setColor(Color.argb(255, 0, 0, 0));
+//            mPaint.setTextSize(150);
+//            mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint);
+//
+//        }
+//    }
 }

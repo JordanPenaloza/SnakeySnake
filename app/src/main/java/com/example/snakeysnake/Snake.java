@@ -159,6 +159,15 @@ public class Snake implements Drawable, GameObjects {
         return false;
     }
 
+    public boolean checkBird(Point l) {
+        for(Point loc: segmentLocations){
+            if (loc.x == l.x && loc.y == l.y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Point getLocation() {
         return segmentLocations.get(0);
     }

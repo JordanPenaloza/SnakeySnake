@@ -21,7 +21,7 @@ public class Bird {
     public void spawn(int y) {
         Random random = new Random();
         position.x = 0; // Start from the left side
-        position.y = y; // Random y position within bounds
+        position.y = random.nextInt(y); // Random y position within bounds
         isActive = true;
     }
 
