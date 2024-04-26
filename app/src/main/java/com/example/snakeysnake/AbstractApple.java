@@ -13,6 +13,7 @@ abstract class AbstractApple implements Drawable, GameObjects {
     protected int mSize;
     protected Bitmap mBitmapApple;
     protected Context context;
+
     public AbstractApple(Context context, Point sr, int s) {
         this.mSpawnRange = sr;
         this.mSize = s;
