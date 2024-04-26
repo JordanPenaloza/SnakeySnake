@@ -15,6 +15,7 @@ abstract class AbstractApple implements Drawable, GameObjects {
     protected int mSize;
     protected Bitmap mBitmapApple;
     protected Context context;
+    protected String type;
 
     public AbstractApple(Context context, Point sr, int s) {
         this.mSpawnRange = sr;
@@ -32,6 +33,9 @@ abstract class AbstractApple implements Drawable, GameObjects {
         location.x = random.nextInt(mSpawnRange.x) + 1;
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
+
+    protected abstract void setType(String type);
+    protected abstract String getType();
 
 
     public Point getLocation(){return location;}

@@ -1,11 +1,8 @@
 package com.example.snakeysnake;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-
-import java.util.Random;
 
 public class DeathApple extends AbstractApple  {
 
@@ -14,16 +11,22 @@ public class DeathApple extends AbstractApple  {
     }
 
     @Override
-    public void spawn() {
-        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.deathapple);
-        defaultSpawn();
+    protected void setType(String type) {
+        this.type = type;
     }
 
-    public void deSpawn() {
-        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, mSize, mSize, false);
-        location.x = -1000;
-        location.y = -1000;
+    @Override
+    protected String getType() {
+        if(this.type == null) {
+            return "NULL";
+        }
+        return this.type;
+    }
+
+    @Override
+    public void spawn() {
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.deathapple);
+        setType("death");
         defaultSpawn();
     }
 }
