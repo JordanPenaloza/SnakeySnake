@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
+import java.util.Random;
+
 abstract class AbstractApple implements Drawable, GameObjects {
     protected Point location = new Point();
     protected Point mSpawnRange;
@@ -24,13 +26,16 @@ abstract class AbstractApple implements Drawable, GameObjects {
     }
 
 
-    public void spawn() {
-        System.out.println("To meet requirement of interface");
+    protected void defaultSpawn() {
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, mSize, mSize, false);
+        Random random = new Random();
+        location.x = random.nextInt(mSpawnRange.x) + 1;
+        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
-    public abstract void spawn(String color);
 
 
     public Point getLocation(){return location;}
+
     public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);
