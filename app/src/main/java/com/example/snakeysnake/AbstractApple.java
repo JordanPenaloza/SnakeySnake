@@ -18,7 +18,7 @@ abstract class AbstractApple implements Drawable, GameObjects {
         this.mSize = s;
         this.location.x = -10;
         this.context = context;
-        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
+        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.redapple);
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 

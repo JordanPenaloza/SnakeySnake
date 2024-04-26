@@ -14,6 +14,7 @@ import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.example.snakeysnake.AppleList;
 
 import java.io.IOException;
 
@@ -34,6 +35,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     protected Paint mPaint;
     private Snake mSnake;
     private Apple mApple;
+
     private Bird mBird;
     private UI mUI;
     private PauseButton mPauseButton;
@@ -41,7 +43,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     private int gameTimer;
     private Dpad dpad;
     private Lebron mLebron;
-
+    private AppleList mAppleList;
     public SnakeGame(Context context, Point size) {
         super(context);
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -80,6 +82,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                         mNumBlocksHigh),
                 blockSize);
 
+
         mSnake = new Snake(context,
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
@@ -91,12 +94,13 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
         mLebron = new Lebron(context, new Point(NUM_BLOCKS_WIDE,
                 mNumBlocksHigh),
                 blockSize);
+        mAppleList = new AppleList(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
 
 
     }
     public void newGame() {
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        mApple.spawn();
+        mApple.spawn("red");
         mLebron.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
@@ -138,7 +142,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                 mBird.spawn(mSnake.getLocation().y);
             }
             else if ((mScore % 2) == 1) {
-                mApple.spawn();
+                mApple.spawn("red");
             }
 
             mScore++;
