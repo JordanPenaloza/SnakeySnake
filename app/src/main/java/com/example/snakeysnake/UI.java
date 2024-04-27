@@ -19,7 +19,7 @@ public class UI {
         synchronized (mCanvas) {
             mPaint.setColor(Color.argb(255, 0, 0, 0));
             mPaint.setTextSize(250);
-            mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+            mCanvas.drawText("Press Resume To Play!", 200, 700, mPaint);
 
         }
     }
@@ -38,12 +38,19 @@ public class UI {
         mCanvas.drawText("Alicia Luna",1600, 260, mPaint);
         mCanvas.drawText("Eric Delgado",1600, 310, mPaint);
     }
-    public void displayContinueMsg(Canvas mCanvas) {
-        synchronized (mCanvas) {
-            mPaint.setColor(Color.argb(255, 0, 0, 0));
-            mPaint.setTextSize(150);
-            mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint);
 
-        }
+    public void displayGameOver(Canvas canvas) {
+        // Display the game over message
+        Paint gameOverPaint = new Paint(mPaint); // Clone the existing paint
+        gameOverPaint.setTextSize(100); // Set the text size for game over message
+        gameOverPaint.setColor(Color.RED); // Set the color to red for the game over message
+        gameOverPaint.setTextAlign(Paint.Align.CENTER); // Center the text
+
+        // Calculate the position to draw the text
+        float x = canvas.getWidth() / 2f;
+        float y = canvas.getHeight() / 4f; // Adjust if necessary
+
+        // Draw the game over text
+        canvas.drawText("GAME OVER", x, y, gameOverPaint);
     }
 }
