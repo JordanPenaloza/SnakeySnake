@@ -40,7 +40,7 @@ public class UI {
     }
 
     public void displayGameOver(Canvas canvas) {
-        // Set up the paint for the game over text
+        // Display the game over message
         Paint gameOverPaint = new Paint(mPaint); // Clone the existing paint
         gameOverPaint.setTextSize(100); // Set the text size for game over message
         gameOverPaint.setColor(Color.RED); // Set the color to red for the game over message
@@ -48,7 +48,7 @@ public class UI {
 
         // Calculate the position to draw the text
         float x = canvas.getWidth() / 2f;
-        float y = canvas.getHeight() / 2f;
+        float y = canvas.getHeight() / 4f; // Adjust if necessary
 
         // Draw the game over text
         canvas.drawText("GAME OVER", x, y, gameOverPaint);

@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 public class MainMenu {
     // Constants for menu items
     private final String[] menuItems = {"Resume", "Quit", "New Game"};
+    // Updated menu items for game over state
+    private final String[] gameOverMenuItems = {"New Game", "Quit"};
+
     // Constants for dimensions and colors
     private final int rectWidth = 600; // Increased width
     private int rectHeight; // Dynamic calculation based on items and separation
@@ -60,55 +63,45 @@ public class MainMenu {
     }
 
     public void displayMenu(Canvas canvas) {
-        // Calculate the position of the menu based on the canvas size
+        // Choose the right set of menu items based on the game state
+        String[] currentMenuItems = isGameOver ? gameOverMenuItems : menuItems;
+
+        // Update rectHeight for the current number of menu items
+        rectHeight = (itemHeight * currentMenuItems.length) + (separationHeight * (currentMenuItems.length - 1));
+
+        // Center startX and startY on the canvas
         startX = (canvas.getWidth() - rectWidth) / 2.0f;
-        startY = (canvas.getHeight() - rectHeight) / 2.0f; // Adjusted to be dynamic
+        startY = (canvas.getHeight() - rectHeight) / 2.0f;
 
-        // Increase the height for each button to create separation lines between them
-        int separationLineHeight = 4; // Height of the separation line
-        rectHeight = (itemHeight + separationLineHeight) * menuItems.length - separationLineHeight; // Adjust rectHeight to include separation lines
-
-        // Draw the menu rectangle
+        // Create and draw menu rectangle
         RectF menuRect = new RectF(startX, startY, startX + rectWidth, startY + rectHeight);
         canvas.drawRect(menuRect, fillPaint);
 
-        // Check if it's game over and set the startY accordingly
-        if (isGameOver) {
-            startY = (canvas.getHeight() / 4f); // Position the menu lower for game over
-        } else {
-            startY = (canvas.getHeight() - rectHeight) / 2.0f; // Center the menu in the middle
-        }
-
-        // Draw "GAME OVER" if the game is over
-        if (isGameOver) {
-            float gameOverTextSize = textSize * 1.5f;
-            textPaint.setTextSize(gameOverTextSize);
-            canvas.drawText("GAME OVER", canvas.getWidth() / 2.0f, startY - textPadding, textPaint);
-            textPaint.setTextSize(textSize); // Reset text size for menu items
-            startY += gameOverTextSize; // Offset startY to draw the menu below "GAME OVER"
-        }
+        // Initialize the buttonRects array with the correct number of RectF objects
+        buttonRects = new RectF[currentMenuItems.length];
 
         // Draw each menu item with a line separating them
-        for (int i = 0; i < menuItems.length; i++) {
-            float top = startY + i * (itemHeight + separationHeight);
+        for (int i = 0; i < currentMenuItems.length; i++) {
+            float top = startY + (i * (itemHeight + separationHeight));
             float bottom = top + itemHeight;
             buttonRects[i] = new RectF(startX, top, startX + rectWidth, bottom);
 
             // Draw the separation lines
             if (i > 0) {
-                float lineTop = top - separationHeight;
-                canvas.drawRect(startX, lineTop, startX + rectWidth, top, borderPaint);
+                canvas.drawRect(startX, top - separationHeight, startX + rectWidth, top, borderPaint);
             }
 
-            // Fill and draw the text
+            // Draw the button rectangles and text
             canvas.drawRect(buttonRects[i], fillPaint);
             float textY = top + itemHeight / 2f - (textPaint.descent() + textPaint.ascent()) / 2f;
-            canvas.drawText(menuItems[i], startX + rectWidth / 2f, textY, textPaint);
+            canvas.drawText(currentMenuItems[i], startX + rectWidth / 2f, textY, textPaint);
         }
 
-        // Draw the outer border last so it covers the separation lines at the edges
+        // Draw the border of the menu
         canvas.drawRect(menuRect, borderPaint);
     }
+
+
 
 
     // Check if a menu item was clicked
@@ -126,5 +119,8 @@ public class MainMenu {
     // Method to set the game over state
     public void setGameOver(boolean isGameOver) {
         this.isGameOver = isGameOver;
+        // Recalculate buttonRects based on game over state
+        buttonRects = new RectF[isGameOver ? gameOverMenuItems.length : menuItems.length];
+        // Your code here to initialize the RectF objects for buttonRects if necessary
     }
 }
