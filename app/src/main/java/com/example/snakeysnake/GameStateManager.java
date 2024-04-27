@@ -17,10 +17,6 @@ public class GameStateManager {
         currentState = State.PAUSED;  // Start the game paused
     }
 
-    public void setState(State state) {
-        this.currentState = state;
-    }
-
     public void startGame() {
         currentState = State.RUNNING;
     }
@@ -53,4 +49,9 @@ public class GameStateManager {
     public boolean isGameOver() {
         return currentState == State.GAME_OVER;
     }
+
+    public String getCurrentStateName() {
+        return currentState.name();
+    }
+
 }
