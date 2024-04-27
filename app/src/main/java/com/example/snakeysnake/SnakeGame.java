@@ -279,6 +279,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             // Assuming you have implemented a way to close the activity or exit the game
             Log.d("Game State", "Game state after quitting: " + gameStateManager.getCurrentStateName());
             // Add code to quit the game
+            ((SnakeActivity) getContext()).finish();
         } else if ("New Game".equals(menuItem)) {
             // Reset the game to its initial state
             newGame(); // This method should reset the game objects and variables
