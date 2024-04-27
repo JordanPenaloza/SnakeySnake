@@ -6,25 +6,39 @@ import android.graphics.Paint;
 
 public class GameStateManager {
     private enum State {
-        MAIN_MENU,
         RUNNING,
         PAUSED,
-        PAUSE_MENU
+        GAME_OVER
     }
 
     private State currentState;
 
     public GameStateManager() {
-        currentState = State.MAIN_MENU;  // Start with the main menu
+        currentState = State.PAUSED;  // Start the game paused
     }
 
     public void setState(State state) {
         this.currentState = state;
     }
 
-    // These are query methods used by SnakeGame to check the state and decide what to draw
-    public boolean isMainMenu() {
-        return currentState == State.MAIN_MENU;
+    public void startGame() {
+        currentState = State.RUNNING;
+    }
+
+    public void pauseGame() {
+        if (currentState == State.RUNNING) {
+            currentState = State.PAUSED;
+        }
+    }
+
+    public void resumeGame() {
+        if (currentState == State.PAUSED) {
+            currentState = State.RUNNING;
+        }
+    }
+
+    public void gameOver() {
+        currentState = State.GAME_OVER;
     }
 
     public boolean isRunning() {
@@ -35,7 +49,8 @@ public class GameStateManager {
         return currentState == State.PAUSED;
     }
 
-    public boolean isPauseMenu() {
-        return currentState == State.PAUSE_MENU;
+
+    public boolean isGameOver() {
+        return currentState == State.GAME_OVER;
     }
 }
