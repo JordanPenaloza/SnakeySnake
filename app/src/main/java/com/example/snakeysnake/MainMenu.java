@@ -104,17 +104,18 @@ public class MainMenu {
 
 
 
-    // Check if a menu item was clicked
     public String menuItemClicked(MotionEvent motionEvent) {
         float fingerX = motionEvent.getX();
         float fingerY = motionEvent.getY();
+        String[] currentMenuItems = isGameOver ? gameOverMenuItems : menuItems;
         for (int i = 0; i < buttonRects.length; i++) {
             if (buttonRects[i].contains(fingerX, fingerY)) {
-                return menuItems[i];  // Return the name of the button clicked
+                return currentMenuItems[i];  // Return the name of the button clicked based on the current game state
             }
         }
         return null;  // No button was clicked
     }
+
 
     // Method to set the game over state
     public void setGameOver(boolean isGameOver) {

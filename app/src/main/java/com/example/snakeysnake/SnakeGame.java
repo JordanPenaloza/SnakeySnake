@@ -243,6 +243,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             case MotionEvent.ACTION_UP:
                 String menuItem = mainMenu.menuItemClicked(motionEvent);
                 if (menuItem != null) {
+                    Log.d("Menu Click", "Menu Item Clicked: " + menuItem);  // Log the detected menu item
                     handleMenuItemClick(menuItem);
                     return true;
                 } else if (mPauseButton.pauseButtonClicked(motionEvent)) {
@@ -378,6 +379,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     }
 
     public void newGame() {
+        stopThread();  // Ensure the current game thread is stopped
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn("red");
         mLebron.spawn();
@@ -386,7 +388,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
         pauseCount = 0;
         gameTimer = 0;
         gameStateManager.startGame();
+        startThread();  // Start a new game thread
     }
+
 
     public void pause() {
         mPlaying = false;
