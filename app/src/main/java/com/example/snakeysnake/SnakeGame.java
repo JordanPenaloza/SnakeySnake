@@ -41,12 +41,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     protected Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
     protected Paint mPaint;
-    private Snake mSnake;
-
     private Apple mApple;
     private DeathApple mDeathApple;
-    private ArrayList<Apple> apples;
-
+    private Snake mSnake;
     private Bird mBird;
     private UI mUI;
     private PauseButton mPauseButton;
@@ -108,10 +105,11 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 blockSize);
 
 
-        mSnake = new Snake(context,
+        Snake.init(context,
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
                 blockSize);
+        mSnake = Snake.getInstance();
 
         mBird = new Bird(size.x,blockSize);
         mUI = new UI(mPaint);
