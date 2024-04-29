@@ -19,10 +19,14 @@ public class Bird {
     }
 
     public void spawn(int y) {
-        Random random = new Random();
-        position.x = 0; // Start from the left side
-        position.y = random.nextInt(y); // Random y position within bounds
-        isActive = true;
+        if(y == 0){
+            position = new Point(-1, -1);
+        }else {
+            Random random = new Random();
+            position.x = 0; // Start from the left side
+            position.y = random.nextInt(y); // Random y position within bounds
+            isActive = true;
+        }
     }
 
     public void move() {

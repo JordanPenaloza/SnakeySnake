@@ -13,28 +13,36 @@ public class PauseButton extends UI {
     private final int borderColor = Color.BLACK;
     private final int borderWidth = 10;
     private final int topPadding = 5;
+    private static PauseButton instance;
 
     public PauseButton(Paint paint) {
+
         super(paint);
     }
 
-    public void displayPauseButton(Canvas canvas, Boolean mPaused) {
+    public static synchronized PauseButton getInstance(Paint paint){
+        if (instance == null){
+            instance = new PauseButton(paint);
+        }
+        return instance;
+    }
+    public void displayPauseButton(Canvas canvas, Boolean mPaused,Boolean dead) {
         Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         initializeFillPaint(fillPaint);
         initializeBorder(borderPaint);
-        draw(canvas, fillPaint, borderPaint,mPaused);
+        draw(canvas, fillPaint, borderPaint,mPaused,dead);
     }
 
-    private void draw(Canvas canvas, Paint fillPaint, Paint borderPaint, Boolean mPaused) {
+    private void draw(Canvas canvas, Paint fillPaint, Paint borderPaint, Boolean mPaused,Boolean dead) {
         int canvasWidth = canvas.getWidth();
         float startX = (canvasWidth - rectWidth) / 2.0f;
         float halfBorderWidth = borderWidth / 2.0f;
-        canvas.drawRect(startX, topPadding, startX + (mPaused ? rectWidth: 500), topPadding + rectHeight, fillPaint);
-        canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + (mPaused ? rectWidth - halfBorderWidth: 500 - halfBorderWidth), topPadding + rectHeight - halfBorderWidth, borderPaint);
+        canvas.drawRect(startX, topPadding, startX +(dead ? rectWidth: (mPaused ? rectWidth: 500)), topPadding + rectHeight, fillPaint);
+        canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + (dead ? rectWidth - halfBorderWidth:(mPaused ? rectWidth - halfBorderWidth: 500 - halfBorderWidth)), topPadding + rectHeight - halfBorderWidth, borderPaint);
         mPaint.setColor(Color.argb(255, 0, 0, 0));
         mPaint.setTextSize(120);
-        canvas.drawText(mPaused ? "Resume" : "Pause", 900, 100, mPaint);
+        canvas.drawText((dead ? "Restart":(mPaused ? "Resume" : "Pause")), 900, 100, mPaint);
     }
 
     private void initializeFillPaint(Paint fillPaint) {

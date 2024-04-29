@@ -24,6 +24,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
     private volatile boolean mPlaying = false;
     private volatile boolean mPaused = true;
+    private boolean isDead = false;
 
     private SoundPool mSP;
     private int mEat_ID = -1;
@@ -45,6 +46,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
     private Bird mBird;
     private UI mUI;
+    private GameOver gameOver;
     private PauseButton mPauseButton;
     private int pauseCount;
     private int gameTimer;
@@ -113,8 +115,11 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
     public void newGame() {
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn("red");
+        mDeathApple.spawn();
+        mBird.spawn(0);
         mLebron.spawn();
         mScore = 0;
+        isDead = false;
         mNextFrameTime = System.currentTimeMillis();
         pauseCount = 0;
         gameTimer = 0;
@@ -168,6 +173,10 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
         if(mSnake.checkDinner(mDeathApple.getLocation())) {
             mPaused = true;
+//            isDead = true;
+            mSP.play(mCrashID, 1, 1, 0, 0, 1);
+            pauseCount = 0;
+            gameOver();
         }
 
         if (mSnake.checkDinner(mLebron.getLocation())) {
@@ -182,11 +191,19 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
         if (mSnake.detectDeath()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
-
             pauseCount = 0;
-            mPaused =true;
+            gameOver();
+
         }
 
+    }
+
+    public void gameOver() {
+        mPlaying = false;  // Stop game updates
+        isDead = true;     // Set dead flag
+        mPaused = true;    // Ensure game is paused
+        gameOver = new GameOver(mSurfaceHolder, mScore, true, NUM_BLOCKS_WIDE, mNumBlocksHigh);
+        //newGame();
     }
 
     public void draw(Canvas canvas, Paint paint) {
@@ -197,7 +214,7 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
             mCanvas.drawColor(Color.argb(255, 26, 180, 100));
             mUI.displayPoints(mCanvas, mScore);
             mUI.displayNames(mCanvas);
-            mPauseButton.displayPauseButton(mCanvas,mPaused);
+            mPauseButton.displayPauseButton(mCanvas,mPaused,isDead);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
             mBird.draw(mCanvas, mPaint);
@@ -208,11 +225,10 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
 
             if(mPaused && pauseCount == 0){
                 mUI.displayTapToPlayMessage(mCanvas);
-
             }
-//            else if(mPaused && pauseCount >= 1) {
-//                mUI.displayContinueMsg(mCanvas);
-//            }
+            if(isDead) {
+                gameOver.draw();
+            }
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 
         }
@@ -242,7 +258,10 @@ public class SnakeGame extends SurfaceView implements Runnable, Drawable {
                         break;
                 }
             }
-            if (mPaused && pauseCount == 0) {
+            if (isDead && gameOver.touchEvent(motionEvent)) {
+                newGame();  // reset the game state and start a new game
+            }
+            else if (mPaused && pauseCount == 0) {
                 mPaused = false;
                 newGame();
                 return true;
