@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import java.util.ArrayList;
 
 public class Snake implements Drawable, GameObjects {
+    private static Snake instance;
 
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
@@ -32,7 +33,7 @@ public class Snake implements Drawable, GameObjects {
 
 
 
-    public Snake(Context context, Point mr, int ss) {
+   private Snake(Context context, Point mr, int ss) {
         segmentLocations = new ArrayList<>();
         mSegmentSize = ss;
         mMoveRange = mr;
@@ -82,6 +83,17 @@ public class Snake implements Drawable, GameObjects {
                         ss, ss, false);
 
 
+    }
+    public static Snake getInstance() {
+       if (instance == null) {
+           throw new IllegalStateException("Snake not initialized");
+       }
+       return instance;
+    }
+    public static void init(Context context, Point mr, int ss) {
+       if (instance == null) {
+           instance = new Snake(context, mr, ss);
+       }
     }
     public void spawn() {
         System.out.println("This should never print because it's being overridden :D");
