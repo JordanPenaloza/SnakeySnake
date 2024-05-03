@@ -1,13 +1,18 @@
 package com.example.snakeysnake;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.SurfaceHolder;
+import android.media.MediaPlayer;
+
+import java.io.IOException;
 
 public class SnakeActivity extends Activity {
     private SnakeGame mSnakeGame;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +21,16 @@ public class SnakeActivity extends Activity {
         Point size = new Point();
         display.getSize(size);
         mSnakeGame = new SnakeGame(this, size);
+
+        mediaPlayer = new MediaPlayer();
+        try {
+            AssetFileDescriptor afd = getAssets().openFd("backyardbeach.ogg");
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Set the callback to the SurfaceHolder of SnakeGame's SurfaceView
         mSnakeGame.getHolder().addCallback(new SurfaceHolder.Callback() {
@@ -44,6 +59,9 @@ public class SnakeActivity extends Activity {
         if (mSnakeGame != null) {
             mSnakeGame.resume(); // This method should handle resuming the game's thread and state
         }
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
     }
 
     @Override
@@ -51,6 +69,17 @@ public class SnakeActivity extends Activity {
         super.onPause();
         if (mSnakeGame != null) {
             mSnakeGame.pause(); // This method should handle pausing the game's thread and state
+        }
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }
