@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
+import java.util.Random;
+
 public class Apple extends AbstractApple  {
 
     public Apple(Context context, Point sr, int s) {
+
         super(context, sr, s);
 
     }
@@ -22,6 +25,30 @@ public class Apple extends AbstractApple  {
             return "NULL";
         }
         return this.type;
+    }
+
+    public String generateType() {
+        Random random = new Random();
+        String type = "";
+        int randomInt = random.nextInt(5) + 1;
+        switch(randomInt) {
+            case 1:
+                type = "red";
+                break;
+            case 2:
+                type =  "blue";
+            break;
+            case 3:
+                type = "gold";
+            break;
+            case 4:
+                type = "green";
+            break;
+            case 5:
+                type = "purple";
+            break;
+        }
+        return type;
     }
 
     public void spawn(String type) {
