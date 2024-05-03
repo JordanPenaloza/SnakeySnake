@@ -39,6 +39,7 @@ abstract class AbstractApple implements Drawable, GameObjects {
 
 
     public Point getLocation(){return location;}
+    public int getSize() {return mSize;}
 
     public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmapApple,
