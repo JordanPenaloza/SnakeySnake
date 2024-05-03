@@ -55,6 +55,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private MainMenu mainMenu;
     private Thread mGameThread = null;
     private Context context;
+    private ArrayList<Apple> mApples;
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -118,6 +119,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mLebron = new Lebron(context, new Point(NUM_BLOCKS_WIDE,
                 mNumBlocksHigh),
                 blockSize);
+        mApples = new ArrayList<>();
+        createApples(blockSize);
     }
 
 
@@ -184,7 +187,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
             // Draw game objects
             mSnake.draw(mCanvas, mPaint);
-            mApple.draw(mCanvas, mPaint);
+            for (Apple apple : mApples) {
+                apple.draw(mCanvas, mPaint);
+            }
             mBird.draw(mCanvas, mPaint);
             mLebron.draw(mCanvas, mPaint);
             mDeathApple.draw(mCanvas, mPaint);
@@ -292,8 +297,11 @@ public class SnakeGame extends SurfaceView implements Runnable {
         Point snakeHead = mSnake.getLocation();
 
         // Handle eating normal apple
-        if (mSnake.checkDinner(mApple.getLocation())) {
-            handleEatingApple();
+        for (int i = 0; i < mApples.size(); i++) {
+            if (mSnake.checkDinner(mApples.get(i).getLocation())) {
+                handleEatingApple(i);
+                break; // Exit the loop after eating an apple
+            }
         }
 
         // Handle eating death apple
@@ -308,9 +316,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     }
 
     // Actions to take when eating an apple
-    private void handleEatingApple() {
+    private void handleEatingApple(int eatenApple) {
         String appleColor = mScore % 2 == 0 ? "green" : "red";
-        mApple.spawn(appleColor);
+        mApples.get(eatenApple).spawn(appleColor);
 
         if ("green".equals(appleColor)) {
             mDeathApple.spawn();
@@ -375,7 +383,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
             // Handle interruption
         }
     }
-
+    public void createApples(int blockSize) {
+        int numberOfApples = 5; // Specify the number of apples you want to spawn
+        for (int i = 0; i < numberOfApples; i++) {
+            Apple apple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+            apple.spawn("red"); // Specify the color of the apple
+            mApples.add(apple);
+        }
+    }
     public void newGame() {
         stopThread();  // Ensure the current game thread is stopped
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
