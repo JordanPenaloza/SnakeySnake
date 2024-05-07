@@ -20,6 +20,7 @@ import android.view.SurfaceView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SnakeGame extends SurfaceView implements Runnable {
     private Thread mThread = null;
@@ -288,7 +289,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mBird.spawn(mSnake.getLocation().y);
         }
 
-        mScore++;
+        // If the apple that was eaten is a golden apple, give the player 10 points
+        if(Objects.equals(mApples.get(eatenApple).type, "gold")) {
+            mScore += 10;
+        }
+        else {
+            mScore++;
+        }
         playSound(mEat_ID);
     }
     // Actions to take when eating Lebron
@@ -337,10 +344,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
             // Handle interruption
         }
     }
-    public void createApples(int blockSize) {
+    public void createApples(int numApples, int blockSize) {
         mApples.clear();
-        int numberOfApples = 5; // Specify the number of apples you want to spawn
-        for (int i = 0; i < numberOfApples; i++) {
+        for (int i = 0; i < numApples; i++) {
             Apple apple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
             apple.spawn(mApple.generateType()); // Specify the color of the apple
             mApples.add(apple);
@@ -349,7 +355,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void newGame() {
         stopThread();  // Ensure the current game thread is stopped
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        createApples(mApple.getSize());
+        createApples(5, mApple.getSize());
         mLebron.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
