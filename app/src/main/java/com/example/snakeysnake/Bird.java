@@ -9,30 +9,54 @@ public class Bird {
     private Point position;
     private int size;
     private int screenWidth;
+    private int screenHeight;
     private boolean isActive;
+    private static final int DIRECTION_UP = 0;
+    private static final int DIRECTION_RIGHT = 1;
+    private static final int DIRECTION_DOWN = 2;
+    private static final int DIRECTION_LEFT = 3;
+    private int currentDirection = DIRECTION_RIGHT;
+    private Point spawnRange;
 
-    public Bird(int screenWidth, int blockSize) {
+    public Bird(int screenWidth, int screenHeight, int blockSize, Point sr) {
         this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.spawnRange = sr;
         this.size = blockSize;
         position = new Point(-1, -1); // Start off-screen
         isActive = false;
     }
 
     public void spawn(int y) {
-        if(y == 0){
-            position = new Point(-1, -1);
-        }else {
-            Random random = new Random();
-            position.x = 0; // Start from the left side
-            position.y = random.nextInt(y); // Random y position within bounds
-            isActive = true;
-        }
+        Random random = new Random();
+        position.x = random.nextInt(spawnRange.x) + 1;
+        position.y = random.nextInt(spawnRange.y - 1) + 1;
+        isActive = true;
     }
 
     public void move() {
         if (isActive) {
-            position.x += 1; // Move to the right
-            if (position.x * size > screenWidth) {
+            int randomDirection = (int)(Math.random() * 4);
+            switch (currentDirection) {
+                case DIRECTION_UP:
+                    position.y -= 1;
+                    break;
+                case DIRECTION_RIGHT:
+                    position.x += 1;
+                    break;
+                case DIRECTION_DOWN:
+                    position.y += 1;
+                    break;
+                case DIRECTION_LEFT:
+                    position.x -= 1;
+                    break;
+            }
+
+            if(Math.random() < .4) {
+                currentDirection = randomDirection;
+            }
+
+            if (position.x >= screenWidth || position.y >= screenHeight || position.x < 0 || position.y < 0) {
                 isActive = false; // Deactivate when it moves off-screen
             }
         }
