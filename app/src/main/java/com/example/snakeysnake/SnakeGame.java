@@ -3,6 +3,8 @@ package com.example.snakeysnake;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -159,7 +161,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
-            mCanvas.drawColor(Color.argb(255, 26, 180, 100)); // Set the background color
+            //mCanvas.drawColor(Color.argb(255, 26, 180, 100)); // Set the background color
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach); // Set the background image
+            mCanvas.drawBitmap(bitmap, 0, 0, null);
 
             // Draw game objects
             mSnake.draw(mCanvas, mPaint);
