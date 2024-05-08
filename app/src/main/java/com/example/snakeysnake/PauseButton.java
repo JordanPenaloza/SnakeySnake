@@ -22,7 +22,7 @@ public class PauseButton extends UI {
     private RectF buttonRect;
 
     public PauseButton(Paint paint, AssetManager assetManager) {
-        super(paint);
+        super(paint, assetManager);
 
         // Initialize Paint objects
         fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
