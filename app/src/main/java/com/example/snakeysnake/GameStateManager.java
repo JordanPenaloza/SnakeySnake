@@ -1,4 +1,5 @@
 package com.example.snakeysnake;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -24,12 +25,15 @@ public class GameStateManager {
     public void pauseGame() {
         if (currentState == State.RUNNING) {
             currentState = State.PAUSED;
+            Log.d("GameStateManager", "Game is now paused.");
         }
     }
+
 
     public void resumeGame() {
         if (currentState == State.PAUSED) {
             currentState = State.RUNNING;
+            Log.d("GameStateManager", "Game is running.");
         }
     }
 
