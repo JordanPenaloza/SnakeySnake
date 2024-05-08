@@ -108,9 +108,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mSnake = Snake.getInstance();
 
         mBird = new Bird(size.x,size.y,blockSize, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh));
-        mUI = new UI(mPaint);
+        mUI = new UI(mPaint, assetManager);
         mPauseButton = new PauseButton(mPaint, assetManager);
-        dpad = new Dpad(mPaint);
+        dpad = new Dpad(mPaint, assetManager);
         mLebron = new Lebron(context, new Point(NUM_BLOCKS_WIDE,
                 mNumBlocksHigh),
                 blockSize);
