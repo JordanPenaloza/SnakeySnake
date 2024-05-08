@@ -281,8 +281,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     }
     // Actions to take when eating an apple
     private void handleEatingApple(int eatenApple) {
-        String appleColor = mApple.generateType();
-        mApples.get(eatenApple).spawn(appleColor);
+        String appleColor = mApples.get(eatenApple).getType();
 
         if ("green".equals(appleColor)) {
             mDeathApple.spawn();
@@ -290,12 +289,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
 
         // If the apple that was eaten is a golden apple, give the player 10 points
-        if(Objects.equals(mApples.get(eatenApple).type, "gold")) {
+        if ("gold".equals(mApples.get(eatenApple).getType())) {
             mScore += 10;
-        }
-        else {
+        } else {
             mScore++;
         }
+        String newAppleColor = mApple.generateType();
+        mApples.get(eatenApple).spawn(newAppleColor);
         playSound(mEat_ID);
     }
     // Actions to take when eating Lebron
