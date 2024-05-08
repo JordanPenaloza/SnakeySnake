@@ -108,10 +108,16 @@ public class MainMenu {
     // Method to set the game over state
     public void setGameOver(boolean isGameOver) {
         this.isGameOver = isGameOver;
-        // Recalculate buttonRects based on game over state
-        buttonRects = new RectF[isGameOver ? gameOverMenuItems.length : menuItems.length];
-        // Your code here to initialize the RectF objects for buttonRects if necessary
+        // Update the buttonRects for the current menu
+        String[] currentMenuItems = isGameOver ? gameOverMenuItems : menuItems;
+        buttonRects = new RectF[currentMenuItems.length];
+        for (int i = 0; i < buttonRects.length; i++) {
+            float top = startY + (i * (itemHeight + separationHeight));
+            float bottom = top + itemHeight;
+            buttonRects[i] = new RectF(startX, top, startX + rectWidth, bottom);
+        }
     }
+
 
     public boolean isTouchOnMenu(float x, float y) {
         for (RectF button : buttonRects) {
