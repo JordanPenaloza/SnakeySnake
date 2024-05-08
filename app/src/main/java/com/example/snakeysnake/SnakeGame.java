@@ -181,7 +181,12 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 dpad.draw(mCanvas, mPaint);
             }
 
-            if (gameStateManager.isGameOver() || gameStateManager.isPaused() || gameStateManager.isInitial()) {
+            // Check if the game is over and display the game over menu
+            if (gameStateManager.isGameOver()) {
+                mainMenu.setGameOver(true);
+                mainMenu.displayMenu(mCanvas);
+                mUI.displayGameOver(mCanvas);  // Display the "GAME OVER" message
+            } else if (gameStateManager.isPaused() || gameStateManager.isInitial()) {
                 mainMenu.setGameOver(gameStateManager.isGameOver() || gameStateManager.isInitial());
                 mainMenu.displayMenu(mCanvas);
             }
@@ -189,6 +194,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
+
 
 
 
@@ -216,22 +222,19 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                // Check if the game is in the initial state or paused
-                if (gameStateManager.isInitial() || gameStateManager.isPaused() || gameStateManager.isGameOver()) {
-                    // Check if the touch is within the menu
+                if (gameStateManager.isGameOver() || gameStateManager.isPaused() || gameStateManager.isInitial()) {
                     if (mainMenu.isTouchOnMenu(x, y)) {
                         String menuItem = mainMenu.menuItemClicked(motionEvent);
                         if (menuItem != null) {
                             handleMenuItemClick(menuItem);
                             return true;
                         }
-                    } else {
-                        // Ignore the touch if it's outside the menu when the game is in the INITIAL state
-                        if (gameStateManager.isInitial()) {
-                            return true; // Consume the event to prevent state change
-                        }
                     }
-                    return true; // Consume the event if it's a menu click
+                    // Ensure no state change if clicked outside the menu during INITIAL state
+                    if (gameStateManager.isInitial() && !mainMenu.isTouchOnMenu(x, y)) {
+                        return true;
+                    }
+                    return true;
                 }
 
                 if (mPauseButton.pauseButtonClicked(motionEvent)) {
@@ -249,7 +252,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
 
         if (gameStateManager.isPaused() && pauseCount == 0) {
-            // Prevent starting the game if the initial click was outside the menu
             if (gameStateManager.isInitial() && !mainMenu.isTouchOnMenu(x, y)) {
                 return true;
             }
@@ -259,6 +261,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
         return true;
     }
+
 
 
 
