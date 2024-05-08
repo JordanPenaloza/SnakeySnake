@@ -161,6 +161,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
     }
     // Draw all game pieces initially, regardless of pause state
+    // Draw all game pieces initially, depending on game state
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
@@ -175,14 +176,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mBird.draw(mCanvas, mPaint);
             mLebron.draw(mCanvas, mPaint);
             mDeathApple.draw(mCanvas, mPaint);
-            dpad.draw(mCanvas, mPaint);
 
             // Display points always, regardless of game state
             mUI.displayPoints(mCanvas, mScore);
 
-            // Display the pause button only when the game is running and not paused
+            // Display the pause button and the D-pad only when the game is running and not paused
             if (gameStateManager.isRunning() && !gameStateManager.isPaused()) {
                 mPauseButton.displayPauseButton(mCanvas);
+                dpad.draw(mCanvas, mPaint); // Only draw D-pad when the game is running
             }
 
             // Ensure the game state checks and main menu drawing are last
@@ -195,6 +196,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
+
 
 
     // Touch event logic for pausing and resuming game
