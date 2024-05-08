@@ -167,7 +167,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach);
             mCanvas.drawBitmap(bitmap, 0, 0, null);
 
-            // Draw game elements
             mSnake.draw(mCanvas, mPaint);
             for (Apple apple : mApples) {
                 apple.draw(mCanvas, mPaint);
@@ -175,7 +174,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mBird.draw(mCanvas, mPaint);
             mLebron.draw(mCanvas, mPaint);
             mDeathApple.draw(mCanvas, mPaint);
-
             mUI.displayPoints(mCanvas, mScore);
 
             if (gameStateManager.isRunning() && !gameStateManager.isPaused()) {
@@ -183,8 +181,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 dpad.draw(mCanvas, mPaint);
             }
 
-            if (gameStateManager.isGameOver() || gameStateManager.isPaused()) {
-                mainMenu.setGameOver(gameStateManager.isGameOver());  // Ensure correct menu is shown
+            if (gameStateManager.isGameOver() || gameStateManager.isPaused() || gameStateManager.isInitial()) {
+                mainMenu.setGameOver(gameStateManager.isGameOver() || gameStateManager.isInitial());
                 mainMenu.displayMenu(mCanvas);
             }
 
@@ -195,7 +193,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
 
 
-    // Touch event logic for pausing and resuming game
+
     // Touch event logic for pausing and resuming game
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -205,7 +203,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                // Process D-pad input if the game is running
                 if (gameStateManager.isRunning() && dpad.dpadTouched(motionEvent)) {
                     if (dpad.bottomClicked(motionEvent)) {
                         mSnake.switchHeading("DOWN");
@@ -219,19 +216,24 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                // Check if the game is paused and if the touch is within the menu
-                if (gameStateManager.isPaused() || gameStateManager.isGameOver()) {
+                // Check if the game is in the initial state or paused
+                if (gameStateManager.isInitial() || gameStateManager.isPaused() || gameStateManager.isGameOver()) {
+                    // Check if the touch is within the menu
                     if (mainMenu.isTouchOnMenu(x, y)) {
                         String menuItem = mainMenu.menuItemClicked(motionEvent);
                         if (menuItem != null) {
                             handleMenuItemClick(menuItem);
                             return true;
                         }
+                    } else {
+                        // Ignore the touch if it's outside the menu when the game is in the INITIAL state
+                        if (gameStateManager.isInitial()) {
+                            return true; // Consume the event to prevent state change
+                        }
                     }
-                    return true;
+                    return true; // Consume the event if it's a menu click
                 }
 
-                // Handle pause button clicks
                 if (mPauseButton.pauseButtonClicked(motionEvent)) {
                     if (gameStateManager.isRunning()) {
                         gameStateManager.pauseGame();
@@ -246,14 +248,20 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 break;
         }
 
-        // Handle starting and pausing the game when initially paused
         if (gameStateManager.isPaused() && pauseCount == 0) {
-            gameStateManager.startGame(); // This method will set the state to RUNNING
-            newGame(); // Reset the game to a new state if needed
-            return true; // Consume the event
+            // Prevent starting the game if the initial click was outside the menu
+            if (gameStateManager.isInitial() && !mainMenu.isTouchOnMenu(x, y)) {
+                return true;
+            }
+            gameStateManager.startGame();
+            newGame();
+            return true;
         }
-        return true; // Consume all other events
+        return true;
     }
+
+
+
     private void handleMenuItemClick(String menuItem) {
         if ("Resume".equals(menuItem)) {
             gameStateManager.resumeGame();
@@ -268,6 +276,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             Log.d("Game State", "Game state after starting a new game: " + gameStateManager.getCurrentStateName());
         }
     }
+
     // Handle snake eating any object
     private void handleSnakeEating() {
         Point snakeHead = mSnake.getLocation();
@@ -287,6 +296,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             handleEatingLebron();
         }
     }
+
     // Actions to take when eating an apple
     private void handleEatingApple(int eatenApple) {
         String appleColor = mApples.get(eatenApple).getType();
@@ -316,12 +326,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mApples.get(eatenApple).spawn(newAppleColor);
         playSound(mEat_ID);
     }
+
     // Actions to take when eating Lebron
     private void handleEatingLebron() {
         mLebron.spawn();
         mScore++;
         playSound(mLebronID);
     }
+
     // Actions to take when eating a death apple
     private void handleEatingDeathApple() {
         Log.d("Collision", "Snake touched the skull - DeathApple");
@@ -375,7 +387,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
     }
     public void newGame() {
-        stopThread();  // Ensure the current game thread is stopped
+        stopThread();
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         createApples(10, mApple.getSize());
         mLebron.spawn();
@@ -383,10 +395,16 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mNextFrameTime = System.currentTimeMillis();
         pauseCount = 0;
         gameTimer = 0;
-        gameStateManager.startGame();
+        if (gameStateManager.isInitial()) {
+            gameStateManager.startGame();
+        } else {
+            gameStateManager = new GameStateManager();  // Reset to initial state
+        }
         mSnake.setSpeed(1);
-        startThread();  // Start a new game thread
+        startThread();
     }
+
+
     public void pause() {
         mPlaying = false;
         try {
