@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -119,6 +120,13 @@ public class Snake implements Drawable, GameObjects {
 
     }
     void move() {
+
+        if (segmentLocations.isEmpty()) {
+            Log.d("Snake", "No segments to move.");
+            return; // Exit if there are no segments
+        }
+
+
         // Move the body
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             segmentLocations.get(i).x = segmentLocations.get(i - 1).x;

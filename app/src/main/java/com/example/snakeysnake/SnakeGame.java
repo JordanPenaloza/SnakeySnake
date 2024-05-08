@@ -61,7 +61,10 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mNumBlocksHigh = size.y / blockSize;
         gameStateManager = new GameStateManager(); // Initialize GameStateManager
         gameStateManager.pauseGame(); // Start game in paused state
-        mainMenu = new MainMenu(mPaint); // Initialize the mainMenu
+        mPaint = new Paint(); // Initialize paint here or ensure it's initialized before this point
+        AssetManager assetManager = context.getAssets(); // Get the AssetManager from the context
+        mainMenu = new MainMenu(mPaint, assetManager); // Initialize the mainMenu with Paint and AssetManager
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -77,7 +80,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         }
         try {
-            AssetManager assetManager = context.getAssets();
             AssetFileDescriptor descriptor;
             descriptor = assetManager.openFd("get_apple.ogg");
             mEat_ID = mSP.load(descriptor, 0);
@@ -107,7 +109,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
         mBird = new Bird(size.x,size.y,blockSize, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh));
         mUI = new UI(mPaint);
-        mPauseButton = new PauseButton(mPaint);
+        mPauseButton = new PauseButton(mPaint, assetManager);
         dpad = new Dpad(mPaint);
         mLebron = new Lebron(context, new Point(NUM_BLOCKS_WIDE,
                 mNumBlocksHigh),
@@ -162,38 +164,39 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
-            //mCanvas.drawColor(Color.argb(255, 26, 180, 100)); // Set the background color
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach); // Set the background image
-            mCanvas.drawBitmap(bitmap, 0, 0, null);
-            // Check the game state and draw UI elements accordingly
-            if (gameStateManager.isGameOver()) {
-                // Display the game over message
-                mUI.displayGameOver(mCanvas);
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach); // Background image
+            mCanvas.drawBitmap(bitmap, 0, 0, null); // Draw the background first
 
-                // Set the game over state for the menu and display it
-                mainMenu.setGameOver(true); // Inform the MainMenu that the game is over
-                mainMenu.displayMenu(mCanvas); // Display the game over menu
-            } else if (gameStateManager.isPaused()) {
-                // If the game is paused, but not over, still show the menu
-                mainMenu.setGameOver(false); // Make sure the game over state is not set in the menu
-                mainMenu.displayMenu(mCanvas); // Display the pause menu
-            } else {
-                // If the game is running, display the score and other running state UI elements
-                mPauseButton.displayPauseButton(mCanvas);
-                mUI.displayPoints(mCanvas, mScore);
-            }
+            // Draw all game elements here
             mSnake.draw(mCanvas, mPaint);
+            for (Apple apple : mApples) {
+                apple.draw(mCanvas, mPaint);
+            }
             mBird.draw(mCanvas, mPaint);
             mLebron.draw(mCanvas, mPaint);
             mDeathApple.draw(mCanvas, mPaint);
             dpad.draw(mCanvas, mPaint);
-            for (Apple apple : mApples) {
-                apple.draw(mCanvas, mPaint);
+
+            // Display points always, regardless of game state
+            mUI.displayPoints(mCanvas, mScore);
+
+            // Display the pause button only when the game is running and not paused
+            if (gameStateManager.isRunning() && !gameStateManager.isPaused()) {
+                mPauseButton.displayPauseButton(mCanvas);
             }
-            // Post the canvas to be drawn on the screen
+
+            // Ensure the game state checks and main menu drawing are last
+            if (gameStateManager.isGameOver() || gameStateManager.isPaused()) {
+                // Display the game over or pause menu last to ensure it's on top
+                mainMenu.displayMenu(mCanvas);
+            }
+
+            // Post the canvas to be shown on the screen
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
+
+
     // Touch event logic for pausing and resuming game
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
