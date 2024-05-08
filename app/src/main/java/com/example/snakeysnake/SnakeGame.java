@@ -165,16 +165,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             //mCanvas.drawColor(Color.argb(255, 26, 180, 100)); // Set the background color
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach); // Set the background image
             mCanvas.drawBitmap(bitmap, 0, 0, null);
-
-            // Draw game objects
-            mSnake.draw(mCanvas, mPaint);
-            for (Apple apple : mApples) {
-                apple.draw(mCanvas, mPaint);
-            }
-            mBird.draw(mCanvas, mPaint);
-            mLebron.draw(mCanvas, mPaint);
-            mDeathApple.draw(mCanvas, mPaint);
-            dpad.draw(mCanvas, mPaint);
             // Check the game state and draw UI elements accordingly
             if (gameStateManager.isGameOver()) {
                 // Display the game over message
@@ -191,6 +181,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 // If the game is running, display the score and other running state UI elements
                 mPauseButton.displayPauseButton(mCanvas);
                 mUI.displayPoints(mCanvas, mScore);
+            }
+            mSnake.draw(mCanvas, mPaint);
+            mBird.draw(mCanvas, mPaint);
+            mLebron.draw(mCanvas, mPaint);
+            mDeathApple.draw(mCanvas, mPaint);
+            dpad.draw(mCanvas, mPaint);
+            for (Apple apple : mApples) {
+                apple.draw(mCanvas, mPaint);
             }
             // Post the canvas to be drawn on the screen
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
@@ -365,7 +363,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void newGame() {
         stopThread();  // Ensure the current game thread is stopped
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        createApples(5, mApple.getSize());
+        createApples(10, mApple.getSize());
         mLebron.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
