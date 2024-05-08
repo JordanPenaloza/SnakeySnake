@@ -165,16 +165,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             //mCanvas.drawColor(Color.argb(255, 26, 180, 100)); // Set the background color
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach); // Set the background image
             mCanvas.drawBitmap(bitmap, 0, 0, null);
-
-            // Draw game objects
-            mSnake.draw(mCanvas, mPaint);
-            for (Apple apple : mApples) {
-                apple.draw(mCanvas, mPaint);
-            }
-            mBird.draw(mCanvas, mPaint);
-            mLebron.draw(mCanvas, mPaint);
-            mDeathApple.draw(mCanvas, mPaint);
-            dpad.draw(mCanvas, mPaint);
             // Check the game state and draw UI elements accordingly
             if (gameStateManager.isGameOver()) {
                 // Display the game over message
@@ -191,6 +181,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 // If the game is running, display the score and other running state UI elements
                 mPauseButton.displayPauseButton(mCanvas);
                 mUI.displayPoints(mCanvas, mScore);
+            }
+            mSnake.draw(mCanvas, mPaint);
+            mBird.draw(mCanvas, mPaint);
+            mLebron.draw(mCanvas, mPaint);
+            mDeathApple.draw(mCanvas, mPaint);
+            dpad.draw(mCanvas, mPaint);
+            for (Apple apple : mApples) {
+                apple.draw(mCanvas, mPaint);
             }
             // Post the canvas to be drawn on the screen
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
@@ -282,16 +280,26 @@ public class SnakeGame extends SurfaceView implements Runnable {
     // Actions to take when eating an apple
     private void handleEatingApple(int eatenApple) {
         String appleColor = mApples.get(eatenApple).getType();
-
         if ("green".equals(appleColor)) {
             mDeathApple.spawn();
             mBird.spawn(mSnake.getLocation().y);
         }
-
         // If the apple that was eaten is a golden apple, give the player 10 points
         if ("gold".equals(mApples.get(eatenApple).getType())) {
             mScore += 10;
-        } else {
+        }
+        if ("red".equals(mApples.get(eatenApple).getType())) {
+            mScore += 1;
+        }
+        if ("blue".equals(mApples.get(eatenApple).getType())) {
+            mScore += 1;
+            mSnake.cutSnake();
+
+        }
+        if ("purple".equals(mApples.get(eatenApple).getType())) {
+            mScore -= 20;
+        }
+        else {
             mScore++;
         }
         String newAppleColor = mApple.generateType();
@@ -318,8 +326,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
         Log.d("Game State", "Game state after death: " + gameStateManager.getCurrentStateName());
     }
     private void handleBirdCollision() {
-        mScore--; // Decrease the score
-        mBird.spawn(mSnake.getLocation().y); // Respawn the bird
+        playSound(mCrashID);
+        gameStateManager.gameOver();
     }
     // Helper method to play sounds
     private void playSound(int soundID) {
@@ -355,13 +363,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void newGame() {
         stopThread();  // Ensure the current game thread is stopped
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        createApples(5, mApple.getSize());
+        createApples(10, mApple.getSize());
         mLebron.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         pauseCount = 0;
         gameTimer = 0;
         gameStateManager.startGame();
+        mSnake.setSpeed(1);
         startThread();  // Start a new game thread
     }
     public void pause() {

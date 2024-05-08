@@ -52,7 +52,7 @@ public class Bird {
                     break;
             }
 
-            if(Math.random() < .4) {
+            if(Math.random() < .2) {
                 currentDirection = randomDirection;
             }
 
@@ -61,6 +61,12 @@ public class Bird {
             }
         }
     }
+    /*public void move() {
+        if (isActive) {
+            position.x += 1;
+        }
+    }*/
+
 
     public void draw(Canvas canvas, Paint paint) {
         if (isActive) {
