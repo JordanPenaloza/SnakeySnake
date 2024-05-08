@@ -19,6 +19,7 @@ public class Snake implements Drawable, GameObjects {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Point mMoveRange;
+    private float speed;
     private enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
@@ -81,6 +82,7 @@ public class Snake implements Drawable, GameObjects {
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,
                         ss, ss, false);
+        this.speed = 1;
 
 
     }
@@ -103,6 +105,19 @@ public class Snake implements Drawable, GameObjects {
         segmentLocations.clear();
         segmentLocations.add(new Point(w / 2, h / 2));
     }
+    public void setSpeed(float speed) {
+       this.speed = speed;
+    }
+    public float getSpeed() {
+       return speed;
+    }
+    void cutSnake() {
+       int halfSize = segmentLocations.size() / 2;
+        if (segmentLocations.size() > halfSize) {
+            segmentLocations.subList(halfSize, segmentLocations.size()).clear();
+        }
+
+    }
     void move() {
         // Move the body
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
@@ -114,19 +129,19 @@ public class Snake implements Drawable, GameObjects {
         Point p = segmentLocations.get(0);
         switch (heading) {
             case UP:
-                p.y--;
+                p.y-= speed;
                 break;
 
             case RIGHT:
-                p.x++;
+                p.x+= speed;
                 break;
 
             case DOWN:
-                p.y++;
+                p.y+= speed;
                 break;
 
             case LEFT:
-                p.x--;
+                p.x-= speed;
                 break;
         }
 

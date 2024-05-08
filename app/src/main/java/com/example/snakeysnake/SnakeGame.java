@@ -282,16 +282,26 @@ public class SnakeGame extends SurfaceView implements Runnable {
     // Actions to take when eating an apple
     private void handleEatingApple(int eatenApple) {
         String appleColor = mApples.get(eatenApple).getType();
-
         if ("green".equals(appleColor)) {
             mDeathApple.spawn();
             mBird.spawn(mSnake.getLocation().y);
         }
-
         // If the apple that was eaten is a golden apple, give the player 10 points
         if ("gold".equals(mApples.get(eatenApple).getType())) {
             mScore += 10;
-        } else {
+        }
+        if ("red".equals(mApples.get(eatenApple).getType())) {
+            mScore += 1;
+        }
+        if ("blue".equals(mApples.get(eatenApple).getType())) {
+            mScore += 1;
+            mSnake.cutSnake();
+
+        }
+        if ("purple".equals(mApples.get(eatenApple).getType())) {
+            mScore -= 20;
+        }
+        else {
             mScore++;
         }
         String newAppleColor = mApple.generateType();
@@ -318,8 +328,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
         Log.d("Game State", "Game state after death: " + gameStateManager.getCurrentStateName());
     }
     private void handleBirdCollision() {
-        mScore--; // Decrease the score
-        mBird.spawn(mSnake.getLocation().y); // Respawn the bird
+        playSound(mCrashID);
+        gameStateManager.gameOver();
     }
     // Helper method to play sounds
     private void playSound(int soundID) {
@@ -362,6 +372,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         pauseCount = 0;
         gameTimer = 0;
         gameStateManager.startGame();
+        mSnake.setSpeed(1);
         startThread();  // Start a new game thread
     }
     public void pause() {
