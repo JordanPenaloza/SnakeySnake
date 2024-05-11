@@ -53,36 +53,24 @@ public class Apple extends AbstractApple  {
 
     public void spawn(String type) {
         switch (type) {
-            case "green": {
+            case "green":
                 mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
-                setType("green");
-                defaultSpawn();
                 break;
-            }
-            case "blue": {
+            case "blue":
                 mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.blueapple);
-                setType("blue");
-                defaultSpawn();
                 break;
-            }
-            case "purple": {
+            case "purple":
                 mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.purpleapple);
-                setType("purple");
-                defaultSpawn();
                 break;
-            }
-            case "gold": {
+            case "gold":
                 mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldapple);
-                setType("gold");
-                defaultSpawn();
                 break;
-            }
             default:
                 mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.redapple);
-                setType("red");
-                defaultSpawn();
                 break;
         }
+        setType(type);
+        defaultSpawn();
     }
 
     @Override

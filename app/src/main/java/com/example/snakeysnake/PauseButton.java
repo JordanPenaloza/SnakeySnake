@@ -1,66 +1,67 @@
 package com.example.snakeysnake;
 
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 public class PauseButton extends UI {
-    // Initial Variables
-    private final int rectWidth = 600;
+    private final int rectWidth = 500;
     private final int rectHeight = 110;
-    private final int fillColor = Color.WHITE;
-    private final int borderColor = Color.BLACK;
-    private final int borderWidth = 10;
+    private final int fillColor = Color.argb(200, 255, 255, 255); // Transparent white
+    private final int borderColor = Color.argb(255, 200, 200, 200); // Light grey
+    private final int borderWidth = 5; // Thinner border
     private final int topPadding = 5;
-    private static PauseButton instance;
+    private final float cornerRadius = 20; // Rounded corners
+    private Paint fillPaint;
+    private Paint borderPaint;
+    private Paint textPaint;
+    private RectF buttonRect;
 
-    public PauseButton(Paint paint) {
+    public PauseButton(Paint paint, AssetManager assetManager) {
+        super(paint, assetManager);
 
-        super(paint);
-    }
+        // Initialize Paint objects
+        fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    public static synchronized PauseButton getInstance(Paint paint){
-        if (instance == null){
-            instance = new PauseButton(paint);
-        }
-        return instance;
-    }
-    public void displayPauseButton(Canvas canvas, Boolean mPaused,Boolean dead) {
-        Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        initializeFillPaint(fillPaint);
-        initializeBorder(borderPaint);
-        draw(canvas, fillPaint, borderPaint,mPaused,dead);
-    }
-
-    private void draw(Canvas canvas, Paint fillPaint, Paint borderPaint, Boolean mPaused,Boolean dead) {
-        int canvasWidth = canvas.getWidth();
-        float startX = (canvasWidth - rectWidth) / 2.0f;
-        float halfBorderWidth = borderWidth / 2.0f;
-        canvas.drawRect(startX, topPadding, startX +(dead ? rectWidth: (mPaused ? rectWidth: 500)), topPadding + rectHeight, fillPaint);
-        canvas.drawRect(startX + halfBorderWidth, topPadding + halfBorderWidth, startX + (dead ? rectWidth - halfBorderWidth:(mPaused ? rectWidth - halfBorderWidth: 500 - halfBorderWidth)), topPadding + rectHeight - halfBorderWidth, borderPaint);
-        mPaint.setColor(Color.argb(255, 0, 0, 0));
-        mPaint.setTextSize(120);
-        canvas.drawText((dead ? "Restart":(mPaused ? "Resume" : "Pause")), 900, 100, mPaint);
-    }
-
-    private void initializeFillPaint(Paint fillPaint) {
+        // Set up Paint properties
         fillPaint.setColor(fillColor);
-    }
-    private void initializeBorder(Paint borderPaint) {
+        fillPaint.setStyle(Paint.Style.FILL);
         borderPaint.setColor(borderColor);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(borderWidth);
+
+        // Load the custom font
+        Typeface customFont = Typeface.createFromAsset(assetManager, "fonts/MightySouly-lxggD.ttf");
+        textPaint.setTypeface(customFont);
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(120);
+        textPaint.setTextAlign(Paint.Align.CENTER);
     }
+
+    public void displayPauseButton(Canvas canvas) {
+        float startX = (canvas.getWidth() - rectWidth) / 2.0f;
+        float startY = topPadding;
+        buttonRect = new RectF(startX, startY, startX + rectWidth, startY + rectHeight);
+
+        // Draw rounded rectangle for button
+        canvas.drawRoundRect(buttonRect, cornerRadius, cornerRadius, fillPaint);
+        canvas.drawRoundRect(buttonRect, cornerRadius, cornerRadius, borderPaint);
+
+        // Draw the text
+        float textY = startY + rectHeight / 2 - (textPaint.descent() + textPaint.ascent()) / 2;
+        canvas.drawText("Pause", startX + rectWidth / 2, textY, textPaint);
+    }
+
     public boolean pauseButtonClicked(MotionEvent motionEvent) {
-        float fingerX = (int) motionEvent.getX();
-        float fingerY = (int) motionEvent.getY();
-        final float buttonX1 = 859;
-        final float buttonX2 = 1346;
-        final float buttonY1 = 6;
-        final float buttonY2 = 104;
-        //check if finger pressed
-        return ((fingerX > buttonX1 && fingerX < buttonX2) && (fingerY > buttonY1 && fingerY < buttonY2));
+        float fingerX = motionEvent.getX();
+        float fingerY = motionEvent.getY();
+        return (fingerX > buttonRect.left && fingerX < buttonRect.right &&
+                fingerY > buttonRect.top && fingerY < buttonRect.bottom);
     }
 }

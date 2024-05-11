@@ -1,17 +1,21 @@
 package com.example.snakeysnake;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 public class UI {
     protected Paint mPaint;
-    protected Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
+    protected Typeface typeface;
 
 
-    public UI(Paint paint) {
+    public UI(Paint paint,AssetManager assetManager) {
 
         mPaint = paint;
+        // Load the custom font from assets
+        typeface = Typeface.createFromAsset(assetManager, "fonts/MightySouly-lxggD.ttf");
         mPaint.setTypeface(typeface);
     }
 

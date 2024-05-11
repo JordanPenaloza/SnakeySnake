@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -19,6 +20,7 @@ public class Snake implements Drawable, GameObjects {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Point mMoveRange;
+    private float speed;
     private enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
@@ -81,6 +83,7 @@ public class Snake implements Drawable, GameObjects {
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,
                         ss, ss, false);
+        this.speed = 1;
 
 
     }
@@ -103,7 +106,27 @@ public class Snake implements Drawable, GameObjects {
         segmentLocations.clear();
         segmentLocations.add(new Point(w / 2, h / 2));
     }
+    public void setSpeed(float speed) {
+       this.speed = speed;
+    }
+    public float getSpeed() {
+       return speed;
+    }
+    void cutSnake() {
+       int halfSize = segmentLocations.size() / 2;
+        if (segmentLocations.size() > halfSize) {
+            segmentLocations.subList(halfSize, segmentLocations.size()).clear();
+        }
+
+    }
     void move() {
+
+        if (segmentLocations.isEmpty()) {
+            Log.d("Snake", "No segments to move.");
+            return; // Exit if there are no segments
+        }
+
+
         // Move the body
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             segmentLocations.get(i).x = segmentLocations.get(i - 1).x;
@@ -114,19 +137,19 @@ public class Snake implements Drawable, GameObjects {
         Point p = segmentLocations.get(0);
         switch (heading) {
             case UP:
-                p.y--;
+                p.y-= speed;
                 break;
 
             case RIGHT:
-                p.x++;
+                p.x+= speed;
                 break;
 
             case DOWN:
-                p.y++;
+                p.y+= speed;
                 break;
 
             case LEFT:
-                p.x--;
+                p.x-= speed;
                 break;
         }
 

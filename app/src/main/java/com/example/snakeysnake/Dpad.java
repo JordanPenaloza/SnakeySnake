@@ -1,5 +1,6 @@
 package com.example.snakeysnake;
 
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -7,9 +8,9 @@ import android.view.MotionEvent;
 
 public class Dpad extends UI implements Drawable {
     public String dpadString = "";
-    public Dpad(Paint paint) {
-        super(paint);
-        paint.setColor(Color.argb(255,0,0,0));
+    public Dpad(Paint paint, AssetManager assetManager) {
+        super(paint, assetManager);
+        paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
     }
 
