@@ -1,44 +1,43 @@
 package com.example.snakeysnake;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 
+@SuppressLint("ViewConstructor")
 public class SnakeGame extends SurfaceView implements Runnable {
     private Thread mThread = null;
-    private long mNextFrameTime;
-    private volatile boolean mPlaying = false;
-    private volatile boolean mPaused = true;
     private SoundPool mSP;
     private int mEat_ID = -1;
     private int mCrashID = -1;
     private int mLebronID = -1;
     private final int NUM_BLOCKS_WIDE = 40;
-    private static final int TARGET_FPS = 30;
-    private static final long MILLIS_PER_SECOND = 1000;
-    private int mNumBlocksHigh;
+    private final int mNumBlocksHigh;
     private int mScore;
     protected Canvas mCanvas;
-    private SurfaceHolder mSurfaceHolder;
-    protected Paint mPaint;
+    private final SurfaceHolder mSurfaceHolder;
+    private final Paint mPaint;
+    private ArrayList<Apple> mApples;
+    private final Context context;
+    private volatile boolean mPlaying = false;
+    private long mNextFrameTime;
+    private final AssetManager assetManager;
+
+    //game components
     private Apple mApple;
     private DeathApple mDeathApple;
     private Snake mSnake;
@@ -46,108 +45,99 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private UI mUI;
     private PauseButton mPauseButton;
     private int pauseCount;
-    private int gameTimer;
+    //private int gameTimer;
     private Dpad dpad;
     private Lebron mLebron;
     private GameStateManager gameStateManager;
     private MainMenu mainMenu;
-    private Thread mGameThread = null;
-    private Context context;
-    private ArrayList<Apple> mApples;
+
+
     public SnakeGame(Context context, Point size) {
         super(context);
         this.context = context;
         int blockSize = size.x / NUM_BLOCKS_WIDE;
         mNumBlocksHigh = size.y / blockSize;
-        gameStateManager = new GameStateManager(); // Initialize GameStateManager
-        gameStateManager.pauseGame(); // Start game in paused state
-        mPaint = new Paint(); // Initialize paint here or ensure it's initialized before this point
-        AssetManager assetManager = context.getAssets(); // Get the AssetManager from the context
-        mainMenu = new MainMenu(mPaint, assetManager); // Initialize the mainMenu with Paint and AssetManager
+        gameStateManager = new GameStateManager();
+        gameStateManager.pauseGame();
+        assetManager = context.getAssets();
+        mainMenu = new MainMenu(assetManager, size.x,size.y);
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
-
-            mSP = new SoundPool.Builder()
-                    .setMaxStreams(5)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        } else {
-            mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        }
-        try {
-            AssetFileDescriptor descriptor;
-            descriptor = assetManager.openFd("get_apple.ogg");
-            mEat_ID = mSP.load(descriptor, 0);
-            descriptor = assetManager.openFd("snake_death.ogg");
-            mCrashID = mSP.load(descriptor, 0);
-            descriptor = assetManager.openFd("lebron.ogg");
-            mLebronID = mSP.load(descriptor, 0);
-
-        } catch (IOException e) {
-            // Empty
-        }
-        mSurfaceHolder = getHolder();
         mPaint = new Paint();
-
-        mApple = new Apple(context,
-                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
-                blockSize);
-
-        mDeathApple = new DeathApple(context,
-                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
-                blockSize);
-        Snake.init(context,
-                new Point(NUM_BLOCKS_WIDE,
-                        mNumBlocksHigh),
-                blockSize);
-        mSnake = Snake.getInstance();
-
-        mBird = new Bird(size.x,size.y,blockSize, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh));
-        mUI = new UI(mPaint, assetManager);
-        mPauseButton = new PauseButton(mPaint, assetManager);
-        dpad = new Dpad(mPaint, assetManager);
-        mLebron = new Lebron(context, new Point(NUM_BLOCKS_WIDE,
-                mNumBlocksHigh),
-                blockSize);
-        mApples = new ArrayList<>();
-
+        mSurfaceHolder = getHolder();
+        setupComponents(blockSize, size);
+        setupSoundPool();
     }
+
+    private void setupComponents(int blockSize, Point size) {
+        Snake.init(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+        mSnake = Snake.getInstance();
+        mApple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+        mDeathApple = new DeathApple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+        mBird = new Bird(size.x, size.y, blockSize, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh) );
+        mUI = new UI(context.getAssets());
+        mPauseButton = new PauseButton(context.getAssets());// blockSize);
+        dpad = new Dpad(context.getAssets());
+        mLebron = new Lebron(context, size, blockSize);
+        gameStateManager = new GameStateManager();
+        gameStateManager.pauseGame();
+        mainMenu = new MainMenu(assetManager, size.x,size.y);
+        mApples = new ArrayList<>();
+    }
+
+    private void setupSoundPool() {
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
+        mSP = new SoundPool.Builder()
+                .setMaxStreams(5)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        mEat_ID = loadSound("get_apple.ogg");
+        mCrashID = loadSound("snake_death.ogg");
+        mLebronID = loadSound("lebron.ogg");
+    }
+
+    private int loadSound(String filename) {
+        try {
+            return mSP.load(assetManager.openFd(filename), 1);
+        } catch (IOException e) {
+            Log.e("Load Sound", "Could not load file: " + filename, e);
+            return -1;
+        }
+    }
+
     // Game loop
     @Override
     public void run() {
         while (mPlaying) {
-            // Instead of checking mPaused, we now check if gameStateManager.isRunning() is true
             if (updateRequired() && gameStateManager.isRunning()) {
                 update();
             }
-            draw(); // Pass the correct parameters
+            draw();
         }
     }
-    public boolean updateRequired() {
 
-        final long TARGET_FPS = 10;
+    public boolean updateRequired() {
+        final long TARGET_FPS = 50;//10;
         final long MILLIS_PER_SECOND = 1000;
 
         if(mNextFrameTime <= System.currentTimeMillis()){
             mNextFrameTime =System.currentTimeMillis()
                     + MILLIS_PER_SECOND / TARGET_FPS;
-
             return true;
         }
         return false;
     }
+
     public void update() {
         // Check if the game state is RUNNING before proceeding with the update logic
         if (!gameStateManager.isRunning()) {
             // If the game is not running, no need to update the game objects
             return;
         }
-        gameTimer++;
         mSnake.move();
         mBird.move();
         handleSnakeEating();
@@ -160,21 +150,16 @@ public class SnakeGame extends SurfaceView implements Runnable {
             handleSnakeDeath();
         }
     }
+
     // Draw all game pieces initially, regardless of pause state
     public void draw() {
-        if (mSurfaceHolder.getSurface().isValid()) {
+        if (!mSurfaceHolder.getSurface().isValid())return;
+        try {
             mCanvas = mSurfaceHolder.lockCanvas();
+
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beach);
             mCanvas.drawBitmap(bitmap, 0, 0, null);
-
-            // Draw game elements
-            mSnake.draw(mCanvas, mPaint);
-            for (Apple apple : mApples) {
-                apple.draw(mCanvas, mPaint);
-            }
-            mBird.draw(mCanvas, mPaint);
-            mLebron.draw(mCanvas, mPaint);
-            mDeathApple.draw(mCanvas, mPaint);
+            drawGameObjects(mCanvas);
 
             mUI.displayPoints(mCanvas, mScore);
 
@@ -187,21 +172,30 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 mainMenu.setGameOver(gameStateManager.isGameOver());  // Ensure correct menu is shown
                 mainMenu.displayMenu(mCanvas);
             }
-
-            mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+        }finally {
+            if (mCanvas != null) {
+                mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+            }
         }
+    }
+
+    private void drawGameObjects(Canvas canvas) {
+        mSnake.draw(canvas, mPaint);
+        for (Apple apple : mApples) {
+            apple.draw(canvas, mPaint);
+        }
+        mBird.draw(canvas, mPaint);
+        mLebron.draw(canvas, mPaint);
+        mDeathApple.draw(canvas, mPaint);
     }
 
 
 
-
     // Touch event logic for pausing and resuming game
-    // Touch event logic for pausing and resuming game
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         int action = motionEvent.getAction();
-        float x = motionEvent.getX();
-        float y = motionEvent.getY();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -221,14 +215,11 @@ public class SnakeGame extends SurfaceView implements Runnable {
             case MotionEvent.ACTION_UP:
                 // Check if the game is paused and if the touch is within the menu
                 if (gameStateManager.isPaused() || gameStateManager.isGameOver()) {
-                    if (mainMenu.isTouchOnMenu(x, y)) {
                         String menuItem = mainMenu.menuItemClicked(motionEvent);
                         if (menuItem != null) {
                             handleMenuItemClick(menuItem);
                             return true;
                         }
-                    }
-                    return true;
                 }
 
                 // Handle pause button clicks
@@ -254,24 +245,27 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
         return true; // Consume all other events
     }
+
     private void handleMenuItemClick(String menuItem) {
-        if ("Resume".equals(menuItem)) {
-            gameStateManager.resumeGame();
-            Log.d("Game State", "Game state after resuming: " + gameStateManager.getCurrentStateName());
-        } else if ("Quit".equals(menuItem)) {
-            Log.d("Game State", "Game state after quitting: " + gameStateManager.getCurrentStateName());
-            ((SnakeActivity) getContext()).finish();
-        } else if ("New Game".equals(menuItem)) {
-            // Reset the game to its initial state
-            newGame(); // This method should reset the game objects and variables
-            gameStateManager.startGame(); // This sets the game state to RUNNING
-            Log.d("Game State", "Game state after starting a new game: " + gameStateManager.getCurrentStateName());
+        switch (menuItem) {
+            case "Resume":
+                gameStateManager.resumeGame();
+                break;
+            case "Quit":
+                Log.d("Game State", "Game state after quitting: " + gameStateManager.getCurrentStateName());
+                ((SnakeActivity) getContext()).finish();
+//                gameStateManager.gameOver();
+                break;
+            case "New Game":
+                newGame();
+                gameStateManager.startGame();
+                break;
         }
+
     }
     // Handle snake eating any object
     private void handleSnakeEating() {
-        Point snakeHead = mSnake.getLocation();
-        // Handle eating normal apple
+        //Point snakeHead = mSnake.getLocation();
         for (int i = 0; i < mApples.size(); i++) {
             if (mSnake.checkDinner(mApples.get(i).getLocation())) {
                 handleEatingApple(i);
@@ -287,12 +281,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
             handleEatingLebron();
         }
     }
+
     // Actions to take when eating an apple
     private void handleEatingApple(int eatenApple) {
-        String appleColor = mApples.get(eatenApple).getType();
-        if ("green".equals(appleColor)) {
-            mDeathApple.spawn();
+        //String appleColor = mApples.get(eatenApple).getType();
+        if ("green".equals(mApples.get(eatenApple).getType())) {
             mBird.spawn(mSnake.getLocation().y);
+            mDeathApple.spawn();
         }
         // If the apple that was eaten is a golden apple, give the player 10 points
         if ("gold".equals(mApples.get(eatenApple).getType())) {
@@ -322,6 +317,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mScore++;
         playSound(mLebronID);
     }
+
     // Actions to take when eating a death apple
     private void handleEatingDeathApple() {
         Log.d("Collision", "Snake touched the skull - DeathApple");
@@ -343,10 +339,12 @@ public class SnakeGame extends SurfaceView implements Runnable {
         playSound(mCrashID);
         gameStateManager.gameOver();
     }
+
     // Helper method to play sounds
     private void playSound(int soundID) {
         mSP.play(soundID, 1, 1, 0, 0, 1);
     }
+
     // Handle starting the thread
     public void startThread() {
         if (mThread == null || !mThread.isAlive()) {
@@ -355,6 +353,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mThread.start();
         }
     }
+
     // Handle stopping the thread
     public void stopThread() {
         mPlaying = false;
@@ -366,6 +365,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             // Handle interruption
         }
     }
+
     public void createApples(int numApples, int blockSize) {
         mApples.clear();
         for (int i = 0; i < numApples; i++) {
@@ -374,6 +374,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mApples.add(apple);
         }
     }
+
     public void newGame() {
         stopThread();  // Ensure the current game thread is stopped
         mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
@@ -382,7 +383,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         pauseCount = 0;
-        gameTimer = 0;
         gameStateManager.startGame();
         mSnake.setSpeed(1);
         startThread();  // Start a new game thread

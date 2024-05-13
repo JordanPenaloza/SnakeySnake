@@ -1,60 +1,41 @@
 package com.example.snakeysnake;
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+
 public class UI {
-    protected Paint mPaint;
-    protected Typeface typeface;
+    private static final int TITLE_TEXT_SIZE = 250;
+    private static final int SCORE_TEXT_SIZE = 120;
+    private static final int NAMES_TEXT_SIZE = 60;
+    private static final int GAME_OVER_TEXT_SIZE = 100;
 
+    private static final int BLACK_COLOR = Color.argb(255, 0, 0, 0);
+    private static final int RED_COLOR = Color.RED;
 
-    public UI(Paint paint,AssetManager assetManager) {
+    private Paint paint;
 
-        mPaint = paint;
-        // Load the custom font from assets
-        typeface = Typeface.createFromAsset(assetManager, "fonts/MightySouly-lxggD.ttf");
-        mPaint.setTypeface(typeface);
+    public UI(AssetManager assetManager) {
+        paint = new Paint();
+        Typeface typeface = Typeface.createFromAsset(assetManager, "fonts/MightySouly-lxggD.ttf");
+        paint.setTypeface(typeface);
+        paint.setAntiAlias(true); // Smoother text
     }
 
-    public void displayTapToPlayMessage(Canvas mCanvas) {
-        synchronized (mCanvas) {
-            mPaint.setColor(Color.argb(255, 0, 0, 0));
-            mPaint.setTextSize(250);
-            mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
-
-        }
-    }
-    public void displayPoints(Canvas mCanvas, int mScore) {
-        synchronized (mCanvas) {
-            mPaint.setColor(Color.argb(255, 0, 0, 0));
-            mPaint.setTextSize(120);
-            mCanvas.drawText("" + mScore, 20, 120, mPaint);
-        }
-    }
-    public void displayNames(Canvas mCanvas) {
-        mPaint.setColor(Color.argb(255, 0, 0, 0));
-        mPaint.setTextSize(60);
-        mCanvas.drawText("Jordan Penaloza ", 1600, 120, mPaint);
-        mCanvas.drawText("Jesus-Pablo Alfaro ", 1600, 190, mPaint);
-        mCanvas.drawText("Alicia Luna",1600, 260, mPaint);
-        mCanvas.drawText("Eric Delgado",1600, 330, mPaint);
+    public void displayPoints(Canvas canvas, int score) {
+        setupPaint(BLACK_COLOR, SCORE_TEXT_SIZE);
+        canvas.drawText(String.valueOf(score), 20, 120, paint);
     }
 
-    public void displayGameOver(Canvas canvas) {
-        // Display the game over message
-        Paint gameOverPaint = new Paint(mPaint); // Clone the existing paint
-        gameOverPaint.setTextSize(100); // Set the text size for game over message
-        gameOverPaint.setColor(Color.RED); // Set the color to red for the game over message
-        gameOverPaint.setTextAlign(Paint.Align.CENTER); // Center the text
 
-        // Calculate the position to draw the text
-        float x = canvas.getWidth() / 2f;
-        float y = canvas.getHeight() / 4f; // Adjust if necessary
+    private void setupPaint(int color, int textSize) {
+        setupPaint(color, textSize, paint);
+    }
 
-        // Draw the game over text
-        canvas.drawText("GAME OVER", x, y, gameOverPaint);
+    private void setupPaint(int color, int textSize, Paint paint) {
+        paint.setColor(color);
+        paint.setTextSize(textSize);
     }
 }
