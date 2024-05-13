@@ -4,6 +4,7 @@ import android.util.Log;
 
 public class GameStateManager {
     private enum State {
+        INITIAL,
         RUNNING,
         PAUSED,
         GAME_OVER
@@ -12,14 +13,15 @@ public class GameStateManager {
     private State currentState;
 
     public GameStateManager() {
-        currentState = State.PAUSED;  // Start the game paused
-        logStateChange("Initial state set to PAUSED");
+
+        currentState = State.INITIAL;  // Start the game in the initial state
     }
 
     public void startGame() {
-        if (currentState == State.PAUSED || currentState == State.GAME_OVER) {
+        if (currentState == State.INITIAL || currentState == State.PAUSED || currentState == State.GAME_OVER) {
             currentState = State.RUNNING;
-            logStateChange("Game started");
+            Log.d("GameStateManager", "Game is now running.");
+
         }
     }
 
@@ -38,14 +40,9 @@ public class GameStateManager {
     }
 
     public void gameOver() {
-        if (currentState == State.RUNNING) {
-            currentState = State.GAME_OVER;
-            logStateChange("Game over");
-        }
-    }
+        currentState = State.GAME_OVER;
+        Log.d("GameStateManager", "Game is now over.");
 
-    private void logStateChange(String message) {
-        Log.d("GameStateManager", message);
     }
 
     public boolean isRunning() {
@@ -60,7 +57,13 @@ public class GameStateManager {
         return currentState == State.GAME_OVER;
     }
 
+    public boolean isInitial() {
+        return currentState == State.INITIAL;
+    }
+
     public String getCurrentStateName() {
         return currentState.name();
     }
+
 }
+
