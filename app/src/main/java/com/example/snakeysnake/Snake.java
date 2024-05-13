@@ -7,163 +7,267 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
+import android.view.MotionEvent;
+
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import java.util.ArrayList;
 
 public class Snake implements Drawable, GameObjects {
     private static Snake instance;
 
-    private final ArrayList<Point> segmentLocations = new ArrayList<>();
-    private final int segmentSize;
-    private final Point moveRange;
+    private ArrayList<Point> segmentLocations;
+    private int mSegmentSize;
+    private Point mMoveRange;
     private float speed;
-
-    @Override
-    public Point getLocation() {
-        return null;
-    }
-
-    @Override
-    public void spawn() {
-
-    }
-
     private enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
 
     private Heading heading = Heading.RIGHT;
-    private final Bitmap bitmapHeadRight;
-    private final Bitmap bitmapHeadLeft;
-    private final Bitmap bitmapHeadUp;
-    private final Bitmap bitmapHeadDown;
-    private final Bitmap bitmapBody;
+    private Bitmap mBitmapHeadRight;
+    private Bitmap mBitmapHeadLeft;
+    private Bitmap mBitmapHeadUp;
+    private Bitmap mBitmapHeadDown;
+    private Bitmap mBitmapBody;
 
-    private Snake(Context context, Point moveRange, int segmentSize) {
-        this.speed = 1;
-        this.segmentSize = segmentSize;
-        this.moveRange = moveRange;
-        this.bitmapHeadRight = loadAndRotateBitmap(context, R.drawable.head, 0);
-        this.bitmapHeadLeft = loadAndRotateBitmap(context, R.drawable.head, 180);
-        this.bitmapHeadUp = loadAndRotateBitmap(context, R.drawable.head, 270);
-        this.bitmapHeadDown = loadAndRotateBitmap(context, R.drawable.head, 90);
-        this.bitmapBody = loadBitmap(context, R.drawable.body, segmentSize);
-    }
 
-    public static Snake getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("Snake not initialized");
-        }
-        return instance;
-    }
 
-    public static void init(Context context, Point moveRange, int segmentSize) {
-        if (instance == null) {
-            instance = new Snake(context, moveRange, segmentSize);
-        }
-    }
 
-    private Bitmap loadBitmap(Context context, int resId, int size) {
-        Bitmap original = BitmapFactory.decodeResource(context.getResources(), resId);
-        return Bitmap.createScaledBitmap(original, size, size, false);
-    }
+   private Snake(Context context, Point mr, int ss) {
+        segmentLocations = new ArrayList<>();
+        mSegmentSize = ss;
+        mMoveRange = mr;
+        mBitmapHeadRight = BitmapFactory
+                .decodeResource(context.getResources(),
+                        R.drawable.head);
 
-    private Bitmap loadAndRotateBitmap(Context context, int resId, float degrees) {
-        Bitmap original = loadBitmap(context, resId, segmentSize);
-        if (degrees == 0) return original;
+        mBitmapHeadLeft = BitmapFactory
+                .decodeResource(context.getResources(),
+                        R.drawable.head);
+
+        mBitmapHeadUp = BitmapFactory
+                .decodeResource(context.getResources(),
+                        R.drawable.head);
+
+        mBitmapHeadDown = BitmapFactory
+                .decodeResource(context.getResources(),
+                        R.drawable.head);
+
+        mBitmapHeadRight = Bitmap
+                .createScaledBitmap(mBitmapHeadRight,
+                        ss, ss, false);
 
         Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        return Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
-    }
+        matrix.preScale(-1, 1);
 
-    public void spawn(int width, int height) {
+        mBitmapHeadLeft = Bitmap
+                .createBitmap(mBitmapHeadRight,
+                        0, 0, ss, ss, matrix, true);
+
+        matrix.preRotate(-90);
+        mBitmapHeadUp = Bitmap
+                .createBitmap(mBitmapHeadRight,
+                        0, 0, ss, ss, matrix, true);
+
+        matrix.preRotate(180);
+        mBitmapHeadDown = Bitmap
+                .createBitmap(mBitmapHeadRight,
+                        0, 0, ss, ss, matrix, true);
+
+        mBitmapBody = BitmapFactory
+                .decodeResource(context.getResources(),
+                        R.drawable.body);
+
+        mBitmapBody = Bitmap
+                .createScaledBitmap(mBitmapBody,
+                        ss, ss, false);
+        this.speed = 1;
+
+
+    }
+    public static Snake getInstance() {
+       if (instance == null) {
+           throw new IllegalStateException("Snake not initialized");
+       }
+       return instance;
+    }
+    public static void init(Context context, Point mr, int ss) {
+       if (instance == null) {
+           instance = new Snake(context, mr, ss);
+       }
+    }
+    public void spawn() {
+        System.out.println("This should never print because it's being overridden :D");
+    }
+    public void spawn(int w, int h) {
         heading = Heading.RIGHT;
         segmentLocations.clear();
-        segmentLocations.add(new Point(width / 2, height / 2));
+        segmentLocations.add(new Point(w / 2, h / 2));
     }
-
-    public void cutSnake() {
-        if (segmentLocations.size() > 1) {
-            segmentLocations.subList(segmentLocations.size() / 2, segmentLocations.size()).clear();
-        }
-    }
-
-    public void move() {
-        if (segmentLocations.isEmpty()) return; // Exit if there are no segments
-
-        // Move the body
-        for (int i = segmentLocations.size() - 1; i > 0; i--) {
-            segmentLocations.get(i).set(segmentLocations.get(i - 1).x, segmentLocations.get(i - 1).y);
-        }
-
-        // Move the head
-        Point head = segmentLocations.get(0);
-        switch (heading) {
-            case UP:    head.y -= 1; break;
-            case RIGHT: head.x += 1; break;
-            case DOWN:  head.y += 1; break;
-            case LEFT:  head.x -= 1; break;
-        }
-
-        // Wrap the snake head to the other side of the screen if out of bounds
-        wrap(head);
-    }
-
-    private void wrap(Point point) {
-        point.x = (point.x < 0) ? moveRange.x - 1 : (point.x >= moveRange.x) ? 0 : point.x;
-        point.y = (point.y < 0) ? moveRange.y - 1 : (point.y >= moveRange.y) ? 0 : point.y;
-    }
-
     public void setSpeed(float speed) {
        this.speed = speed;
     }
+    public float getSpeed() {
+       return speed;
+    }
+    void cutSnake() {
+       int halfSize = segmentLocations.size() / 2;
+        if (segmentLocations.size() > halfSize) {
+            segmentLocations.subList(halfSize, segmentLocations.size()).clear();
+        }
 
-    public boolean detectDeath() {
-        Point head = segmentLocations.get(0);
-        for (int i = 1; i < segmentLocations.size(); i++) {
-            if (head.equals(segmentLocations.get(i))) {
-                return true;
+    }
+    void move() {
+
+        if (segmentLocations.isEmpty()) {
+            Log.d("Snake", "No segments to move.");
+            return; // Exit if there are no segments
+        }
+
+
+        // Move the body
+        for (int i = segmentLocations.size() - 1; i > 0; i--) {
+            segmentLocations.get(i).x = segmentLocations.get(i - 1).x;
+            segmentLocations.get(i).y = segmentLocations.get(i - 1).y;
+        }
+
+        // Move the head
+        Point p = segmentLocations.get(0);
+        switch (heading) {
+            case UP:
+                p.y-= speed;
+                break;
+
+            case RIGHT:
+                p.x+= speed;
+                break;
+
+            case DOWN:
+                p.y+= speed;
+                break;
+
+            case LEFT:
+                p.x-= speed;
+                break;
+        }
+
+        // Wrap the snake head to the other side of the screen if out of bounds
+        if (p.x >= mMoveRange.x) {
+            p.x = 0;
+        } else if (p.x < 0) {
+            p.x = mMoveRange.x - 1;
+        }
+
+        if (p.y >= mMoveRange.y) {
+            p.y = 0;
+        } else if (p.y < 0) {
+            p.y = mMoveRange.y - 1;
+        }
+    }
+    boolean detectDeath() {
+
+        boolean dead = false;
+        if (segmentLocations.get(0).x == -1 ||
+                segmentLocations.get(0).x > mMoveRange.x ||
+                segmentLocations.get(0).y == -1 ||
+                segmentLocations.get(0).y > mMoveRange.y) {
+
+            dead = true;
+        }
+        for (int i = segmentLocations.size() - 1; i > 0; i--) {
+            if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
+                    segmentLocations.get(0).y == segmentLocations.get(i).y) {
+
+                dead = true;
             }
         }
-        return false;
+        return dead;
     }
-
-    public boolean checkDinner(Point foodLocation) {
-        if (segmentLocations.get(0).equals(foodLocation)) {
+    public boolean checkDinner(Point l) {
+        if (segmentLocations.get(0).x == l.x &&
+                segmentLocations.get(0).y == l.y) {
             segmentLocations.add(new Point(-10, -10));
             return true;
         }
         return false;
     }
 
+    public Point getLocation() {
+        return segmentLocations.get(0);
+    }
+
     public void draw(Canvas canvas, Paint paint) {
-        if (segmentLocations.isEmpty()) return;
 
-        Bitmap headBitmap = bitmapHeadRight; // Default to right
-        switch (heading) {
-            case RIGHT:
-                break;
-            case LEFT:  headBitmap = bitmapHeadLeft;  break;
-            case UP:    headBitmap = bitmapHeadUp;    break;
-            case DOWN:  headBitmap = bitmapHeadDown;  break;
-        }
-        Point head = segmentLocations.get(0);
-        canvas.drawBitmap(headBitmap, head.x * segmentSize, head.y * segmentSize, paint);
+        if (!segmentLocations.isEmpty()) {
+            switch (heading) {
+                case RIGHT:
+                    canvas.drawBitmap(mBitmapHeadRight,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+                case LEFT:
+                    canvas.drawBitmap(mBitmapHeadLeft,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
 
-        for (int i = 1; i < segmentLocations.size(); i++) {
-            Point segment = segmentLocations.get(i);
-            canvas.drawBitmap(bitmapBody, segment.x * segmentSize, segment.y * segmentSize, paint);
+                case UP:
+                    canvas.drawBitmap(mBitmapHeadUp,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+                case DOWN:
+                    canvas.drawBitmap(mBitmapHeadDown,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+            }
+            for (int i = 1; i < segmentLocations.size(); i++) {
+                canvas.drawBitmap(mBitmapBody,
+                        segmentLocations.get(i).x
+                                * mSegmentSize,
+                        segmentLocations.get(i).y
+                                * mSegmentSize, paint);
+            }
         }
     }
 
-    public void switchHeading(String direction) {
-        Heading newHeading = Heading.valueOf(direction);
-        if (newHeading == null) return;
 
-        // Prevent reversing direction
-        if (Math.abs(newHeading.ordinal() - heading.ordinal()) != 2) {
-            heading = newHeading;
-        }
+    void switchHeading(String direction) {
+
+        switch (direction) {
+            case "UP":
+                if (heading != Heading.DOWN){
+                    heading = Heading.UP;
+                }
+                break;
+            case "RIGHT":
+                if (heading != Heading.LEFT) {
+                    heading = Heading.RIGHT;
+                }
+                break;
+            case "DOWN":
+                if (heading != Heading.UP) {
+                    heading = Heading.DOWN;
+                }
+                break;
+            case "LEFT":
+                if (heading != Heading.RIGHT) {
+                    heading = Heading.LEFT;
+                }
+                break;
+            }
+
+
     }
 }
