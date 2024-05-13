@@ -1,9 +1,6 @@
 package com.example.snakeysnake;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 
+import android.util.Log;
 
 public class GameStateManager {
     private enum State {
@@ -16,29 +13,39 @@ public class GameStateManager {
 
     public GameStateManager() {
         currentState = State.PAUSED;  // Start the game paused
+        logStateChange("Initial state set to PAUSED");
     }
 
     public void startGame() {
-        currentState = State.RUNNING;
+        if (currentState == State.PAUSED || currentState == State.GAME_OVER) {
+            currentState = State.RUNNING;
+            logStateChange("Game started");
+        }
     }
 
     public void pauseGame() {
         if (currentState == State.RUNNING) {
             currentState = State.PAUSED;
-            Log.d("GameStateManager", "Game is now paused.");
+            logStateChange("Game paused");
         }
     }
-
 
     public void resumeGame() {
         if (currentState == State.PAUSED) {
             currentState = State.RUNNING;
-            Log.d("GameStateManager", "Game is running.");
+            logStateChange("Game resumed");
         }
     }
 
     public void gameOver() {
-        currentState = State.GAME_OVER;
+        if (currentState == State.RUNNING) {
+            currentState = State.GAME_OVER;
+            logStateChange("Game over");
+        }
+    }
+
+    private void logStateChange(String message) {
+        Log.d("GameStateManager", message);
     }
 
     public boolean isRunning() {
@@ -49,7 +56,6 @@ public class GameStateManager {
         return currentState == State.PAUSED;
     }
 
-
     public boolean isGameOver() {
         return currentState == State.GAME_OVER;
     }
@@ -57,5 +63,4 @@ public class GameStateManager {
     public String getCurrentStateName() {
         return currentState.name();
     }
-
 }
