@@ -11,49 +11,40 @@ import java.util.Random;
 
 abstract class AbstractApple implements Drawable, GameObjects {
     protected Point location = new Point();
-    protected Point spawnRange;
-    protected int size;
-    protected Bitmap bitmapApple;
+    protected Point mSpawnRange;
+    protected int mSize;
+    protected Bitmap mBitmapApple;
     protected Context context;
     protected String type;
 
-    public AbstractApple(Context context, Point spawnRange, int size, int drawableResourceId) {
+    public AbstractApple(Context context, Point sr, int s) {
+        this.mSpawnRange = sr;
+        this.mSize = s;
+        this.location.x = -10;
         this.context = context;
-        this.spawnRange = spawnRange;
-        this.size = size;
-        this.bitmapApple = loadAndScaleBitmap(drawableResourceId);
-        resetLocation();
+        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.redapple);
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 
-    private Bitmap loadAndScaleBitmap(int resourceId) {
-        Bitmap initialBitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
-        return Bitmap.createScaledBitmap(initialBitmap, size, size, false);
-    }
 
-    public void spawn(String type) {
-        this.type = type;
-        resetLocation();
-    }
-
-    void resetLocation() {
+    protected void defaultSpawn() {
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, mSize, mSize, false);
         Random random = new Random();
-        location.x = random.nextInt(spawnRange.x);
-        location.y = random.nextInt(spawnRange.y);
-    }
-
-    public Point getLocation() {
-        return location;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void draw(Canvas canvas, Paint paint) {
-        canvas.drawBitmap(bitmapApple, location.x * size, location.y * size, paint);
+        location.x = random.nextInt(mSpawnRange.x) + 1;
+        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
 
     protected abstract void setType(String type);
-
     protected abstract String getType();
+
+
+    public Point getLocation(){return location;}
+    public int getSize() {return mSize;}
+
+    public void draw(Canvas canvas, Paint paint){
+        canvas.drawBitmap(mBitmapApple,
+                location.x * mSize, location.y * mSize, paint);
+
+    }
+
 }

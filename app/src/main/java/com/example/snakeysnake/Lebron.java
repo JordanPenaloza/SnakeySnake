@@ -10,44 +10,38 @@ import android.graphics.Point;
 import java.util.Random;
 
 public class Lebron implements GameObjects, Drawable {
-    private static final Random random = new Random();
+    protected Point location = new Point();
+    private Bitmap mBitmap;
+    protected int mSize;
+    protected Point mSpawnRange;
+    protected Context context;
 
-    private final Bitmap mBitmap;
-    private final Point location = new Point();
-    private final int mSize;
-    private final Point mSpawnRange;
-    private final Context context;
-
-    public Lebron(Context context, Point spawnRange, int size) {
+    public Lebron(Context context, Point sr, int s) {
+        location = new Point(0, 0);
+        mBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.lebron);
+        mBitmap = Bitmap.createScaledBitmap(mBitmap, s, s, false);
+        this.mSpawnRange = sr;
+        this.mSize = s;
+        this.location.x = -10;
         this.context = context;
-        this.mSpawnRange = spawnRange;
-        this.mSize = size;
-        this.mBitmap = loadScaledBitmap(R.drawable.lebron, size);
-        resetLocation();
+
     }
 
-    private Bitmap loadScaledBitmap(int resId, int size) {
-        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), resId);
-        return Bitmap.createScaledBitmap(originalBitmap, size, size, false);
-    }
-
-    @Override
     public void draw(Canvas canvas, Paint paint) {
         canvas.drawBitmap(mBitmap, location.x * mSize, location.y * mSize, paint);
     }
 
-    @Override
     public void spawn() {
-        resetLocation(); // Resets the location each time it spawns
+
+        mBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.lebron);
+        mBitmap = Bitmap.createScaledBitmap(mBitmap, mSize* 2, mSize * 2, false);
+        Random random = new Random();
+        location.x = random.nextInt(mSpawnRange.x) + 1;
+        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
 
-    private void resetLocation() {
-        location.x = random.nextInt(mSpawnRange.x);
-        location.y = random.nextInt(mSpawnRange.y);
-    }
-
-    @Override
     public Point getLocation() {
-        return new Point(location);
+        return location;
     }
+
 }

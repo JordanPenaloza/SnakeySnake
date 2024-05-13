@@ -1,65 +1,81 @@
 package com.example.snakeysnake;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
 import java.util.Random;
 
-public class Apple extends AbstractApple {
+public class Apple extends AbstractApple  {
 
-    private static final Random random = new Random();
+    public Apple(Context context, Point sr, int s) {
 
-    public Apple(Context context, Point spawnRange, int size) {
-        super(context, spawnRange, size, R.drawable.redapple); // Default to red apple initially
+        super(context, sr, s);
+
     }
 
     @Override
     protected void setType(String type) {
         this.type = type;
-        updateBitmapForType(type);
     }
 
     @Override
     protected String getType() {
-        return type == null ? "NULL" : type;
-    }
-
-    private void updateBitmapForType(String type) {
-        int resourceId = getResourceIdForType(type);
-        if (resourceId != 0) {
-            Bitmap newBitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
-            bitmapApple = Bitmap.createScaledBitmap(newBitmap, size, size, false);
+        if(this.type == null) {
+            return "NULL";
         }
-    }
-
-    private int getResourceIdForType(String type) {
-        switch (type) {
-            case "green":
-                return R.drawable.greenapple;
-            case "blue":
-                return R.drawable.blueapple;
-            case "purple":
-                return R.drawable.purpleapple;
-            case "gold":
-                return R.drawable.goldapple;
-            default:
-                return R.drawable.redapple;
-        }
+        return this.type;
     }
 
     public String generateType() {
-        String[] types = {"red", "blue", "gold", "green", "purple"};
-        return types[random.nextInt(types.length)];
+        Random random = new Random();
+        String type = "";
+        int randomInt = random.nextInt(5) + 1;
+        switch(randomInt) {
+            case 1:
+                type = "red";
+                break;
+            case 2:
+                type =  "blue";
+            break;
+            case 3:
+                type = "gold";
+            break;
+            case 4:
+                type = "green";
+            break;
+            case 5:
+                type = "purple";
+            break;
+        }
+        return type;
     }
 
     public void spawn(String type) {
+        switch (type) {
+            case "green":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.greenapple);
+                break;
+            case "blue":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.blueapple);
+                break;
+            case "purple":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.purpleapple);
+                break;
+            case "gold":
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldapple);
+                break;
+            default:
+                mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.redapple);
+                break;
+        }
         setType(type);
-        resetLocation();
+        defaultSpawn();
     }
 
     @Override
     public void spawn() {
+        // Do nothing
     }
 }
+
