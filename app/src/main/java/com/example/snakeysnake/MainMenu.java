@@ -1,127 +1,103 @@
 package com.example.snakeysnake;
 
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 public class MainMenu {
-    // Constants for menu items
+    private static final int RECT_WIDTH = 600;
+    private static final int ITEM_HEIGHT = 120;
+    private static final int SEPARATION_HEIGHT = 2;
+    private static final int BORDER_WIDTH = 5;
+    private static final int TEXT_SIZE = 120;
+    private static final int CORNER_RADIUS = 20;
+
     private final String[] menuItems = {"Resume", "Quit", "New Game"};
-    // Updated menu items for game over state
     private final String[] gameOverMenuItems = {"New Game", "Quit"};
-
-    // Constants for dimensions and colors
-    private final int rectWidth = 600; // Increased width
-    private int rectHeight; // Dynamic calculation based on items and separation
-    private final int itemHeight = 120; // Increased height for each item
-    private final int separationHeight = 2; // Height for the separation between items
-    private final int fillColor = Color.WHITE;
-    private final int borderColor = Color.BLACK;
-    private final int borderWidth = 10;
-    private final int textSize = 120;
-    private boolean isGameOver = false;
-
-    // Padding around text
-    private final int textPadding = 20;
-
-    // Paint objects for drawing
-    private Paint fillPaint;
-    private Paint borderPaint;
-    private Paint textPaint;
-
-    // Position variables
-    private float startX;
-    private float startY;
-
-    // Rectangles for the buttons
+    private String[] currentMenuItems;
     private RectF[] buttonRects;
+    private boolean isGameOver;
+    private final Paint fillPaint;
+    private final Paint borderPaint;
+    private final Paint textPaint;
+    private final int screenWidth;
+    private final int screenHeight;
+    private int rectHeight;
+    private RectF menuRect;
 
-    public MainMenu(Paint paint) {
+    public MainMenu(AssetManager assetManager, int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+
         fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        initializePaints();
-
-        rectHeight = (itemHeight * menuItems.length) + textPadding * 2;
+        initializePaints(assetManager);
+        rectHeight = (ITEM_HEIGHT * menuItems.length) + CORNER_RADIUS * 2;
         buttonRects = new RectF[menuItems.length];
+        menuRect = new RectF();
+        setMenuItems();
     }
 
-    private void initializePaints() {
-        fillPaint.setColor(fillColor);
+    private void initializePaints(AssetManager assetManager) {
+        fillPaint.setColor(Color.argb(200, 255, 255, 255));
         fillPaint.setStyle(Paint.Style.FILL);
 
-        borderPaint.setColor(borderColor);
+        borderPaint.setColor(Color.argb(255, 200, 200, 200));
         borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(borderWidth);
+        borderPaint.setStrokeWidth(BORDER_WIDTH);
 
+        Typeface customFont = Typeface.createFromAsset(assetManager, "fonts/MightySouly-lxggD.ttf");
+        textPaint.setTypeface(customFont);
         textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(textSize);
+        textPaint.setTextSize(TEXT_SIZE);
         textPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-    public void displayMenu(Canvas canvas) {
-        // Choose the right set of menu items based on the game state
-        String[] currentMenuItems = isGameOver ? gameOverMenuItems : menuItems;
+    private void setMenuItems() {
+        currentMenuItems = isGameOver ? gameOverMenuItems : menuItems;
+        rectHeight = (ITEM_HEIGHT * currentMenuItems.length) + (SEPARATION_HEIGHT * (currentMenuItems.length - 1));
 
-        // Update rectHeight for the current number of menu items
-        rectHeight = (itemHeight * currentMenuItems.length) + (separationHeight * (currentMenuItems.length - 1));
-
-        // Center startX and startY on the canvas
-        startX = (canvas.getWidth() - rectWidth) / 2.0f;
-        startY = (canvas.getHeight() - rectHeight) / 2.0f;
-
-        // Create and draw menu rectangle
-        RectF menuRect = new RectF(startX, startY, startX + rectWidth, startY + rectHeight);
-        canvas.drawRect(menuRect, fillPaint);
-
-        // Initialize the buttonRects array with the correct number of RectF objects
+        float startX = (screenWidth - RECT_WIDTH) / 2.0f;
+        float startY = (screenHeight - rectHeight) / 2.0f;
         buttonRects = new RectF[currentMenuItems.length];
-
-        // Draw each menu item with a line separating them
+        menuRect = new RectF(startX, startY, startX + RECT_WIDTH, startY + rectHeight);
         for (int i = 0; i < currentMenuItems.length; i++) {
-            float top = startY + (i * (itemHeight + separationHeight));
-            float bottom = top + itemHeight;
-            buttonRects[i] = new RectF(startX, top, startX + rectWidth, bottom);
-
-            // Draw the separation lines
-            if (i > 0) {
-                canvas.drawRect(startX, top - separationHeight, startX + rectWidth, top, borderPaint);
-            }
-
-            // Draw the button rectangles and text
-            canvas.drawRect(buttonRects[i], fillPaint);
-            float textY = top + itemHeight / 2f - (textPaint.descent() + textPaint.ascent()) / 2f;
-            canvas.drawText(currentMenuItems[i], startX + rectWidth / 2f, textY, textPaint);
+            float top = startY + i * (ITEM_HEIGHT + SEPARATION_HEIGHT);
+            float bottom = top + ITEM_HEIGHT;
+            buttonRects[i] = new RectF(startX, top, startX + RECT_WIDTH, bottom);
         }
-
-        // Draw the border of the menu
-        canvas.drawRect(menuRect, borderPaint);
     }
 
-
-
+    public void displayMenu(Canvas canvas) {
+        for (int i = 0; i < buttonRects.length; i++) {
+            canvas.drawRoundRect(buttonRects[i], CORNER_RADIUS, CORNER_RADIUS, fillPaint);
+            float textY = buttonRects[i].top + ITEM_HEIGHT / 2f - (textPaint.descent() + textPaint.ascent()) / 2f;
+            canvas.drawText(currentMenuItems[i], buttonRects[i].centerX(), textY, textPaint);
+        }
+        canvas.drawRoundRect(menuRect, CORNER_RADIUS, CORNER_RADIUS, borderPaint);
+    }
 
     public String menuItemClicked(MotionEvent motionEvent) {
         float fingerX = motionEvent.getX();
         float fingerY = motionEvent.getY();
-        String[] currentMenuItems = isGameOver ? gameOverMenuItems : menuItems;
         for (int i = 0; i < buttonRects.length; i++) {
             if (buttonRects[i].contains(fingerX, fingerY)) {
-                return currentMenuItems[i];  // Return the name of the button clicked based on the current game state
+                return currentMenuItems[i];
             }
         }
-        return null;  // No button was clicked
+        return null;
     }
 
-
-    // Method to set the game over state
     public void setGameOver(boolean isGameOver) {
-        this.isGameOver = isGameOver;
-        // Recalculate buttonRects based on game over state
-        buttonRects = new RectF[isGameOver ? gameOverMenuItems.length : menuItems.length];
-        // Your code here to initialize the RectF objects for buttonRects if necessary
+        if (this.isGameOver != isGameOver) {
+            this.isGameOver = isGameOver;
+            setMenuItems();  // Recalculate button rectangles if game state changes
+        }
     }
 }
