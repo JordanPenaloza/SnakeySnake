@@ -322,9 +322,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if ("purple".equals(mApples.get(eatenApple).getType())) {
             mScore -= 20;
         }
-        else {
-            mScore++;
-        }
         String newAppleColor = mApple.generateType();
         mApples.get(eatenApple).spawn(newAppleColor);
         playSound(mEat_ID);
